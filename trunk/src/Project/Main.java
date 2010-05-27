@@ -33,7 +33,7 @@ public class Main {
         NetFlowProcess.getInstance();
         NetFlowReceiver.getInstance();
         Trapd.getInstance();
-        test();
+        //test();
     }
     private static void test() {
         DetectSet data = new DetectSet("163.22.32.101");

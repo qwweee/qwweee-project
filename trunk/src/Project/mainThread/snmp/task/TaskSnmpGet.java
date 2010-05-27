@@ -35,6 +35,7 @@ public class TaskSnmpGet implements Runnable {
                     e.printStackTrace();
                 }
                 String tmp = snmp.getValue(mib);
+                //System.out.println(tmp);
                 if (tmp == null) {
                     System.out.println("SNMPGET already power off! break Detection Thread!");
                     break;

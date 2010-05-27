@@ -101,11 +101,6 @@ public final class Config {
      */
     public static int DNS_ANALYSIS_TIME;
     /**
-     * snmp get table時的延遲時間<p>
-     * 單位:毫秒(ms) 200
-     */
-    public static int SNMP_DELAY_TIME;
-    /**
      * apache的位址
      */
     public static String APACHE_PATH;
@@ -140,7 +135,6 @@ public final class Config {
             PER_BOOT_DETECT_TIME = Integer.parseInt(settings.getProperty("Per_boot_detect_time", "5"));
             PER_OTHER_DETECT_TIME = Integer.parseInt(settings.getProperty("Per_other_detect_time", "5"));
             DNS_ANALYSIS_TIME = Integer.parseInt(settings.getProperty("DNS_analysis_time", "15"));
-            SNMP_DELAY_TIME = Integer.parseInt(settings.getProperty("Snmp_delay_time", "1000"));
             /**
              * db setup
              */
@@ -152,8 +146,8 @@ public final class Config {
             /**
              * queue size setup
              */
-            ZOMBIE_QUEUE_SIZE = Integer.parseInt(settings.getProperty("Zombie_Queue_Size", "10"));
-            NETFLOW_QUEUE_SIZE = Integer.parseInt(settings.getProperty("Netflow_Queue_Size", "10"));
+            ZOMBIE_QUEUE_SIZE = Integer.parseInt(settings.getProperty("Zombie_Queue_Size", "20"));
+            NETFLOW_QUEUE_SIZE = Integer.parseInt(settings.getProperty("Netflow_Queue_Size", "100"));
             /**
              * others setup
              */

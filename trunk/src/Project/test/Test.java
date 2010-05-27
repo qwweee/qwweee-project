@@ -3,7 +3,12 @@
  */
 package Project.test;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import Project.config.Config;
+import Project.config.DBConfig;
+import Project.db.DatabaseFactory;
 import Project.struct.DetectSet;
 
 /**
@@ -14,12 +19,14 @@ public class Test {
 
     /**
      * @param args
+     * @throws SQLException 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Config.Load();
-        String host = "163.22.32.101";
-        DetectSet set = new DetectSet(host);
-        set.setLinkUp();
+        DBConfig.Load();
+        DatabaseFactory.setDatabaseSettings(Config.DBDriver, Config.DBURL, Config.DBUser, Config.DBPassword, Config.DBMaxCon);
+        DatabaseFactory.getInstance();
+        Connection con = DatabaseFactory.getInstance().getConnection();
     }
 
 }

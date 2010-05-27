@@ -29,6 +29,7 @@ public class CloseZombie extends Thread {
         this.setName("CloseZombie");
         queue = StaticManager.ZOMBIE_QUEUE;
         isStop = false;
+        this.setPriority(Thread.MAX_PRIORITY);
         this.start();
     }
     /**

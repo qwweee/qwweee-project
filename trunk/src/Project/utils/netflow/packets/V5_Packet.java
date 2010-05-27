@@ -1,5 +1,6 @@
 package Project.utils.netflow.packets;
 
+import Project.StaticManager;
 import Project.utils.netflow.DoneException;
 import Project.utils.netflow.Util;
 
@@ -85,14 +86,16 @@ public class V5_Packet {
             try {
                 f = new V5_Flow(RouterIP, buf, p);
                 // TODO db 將flow資料存入資料庫
-                /*if (Trapd.FlowList.containsKey(f.dstaddr)) {
-                    DBTest.getInstance().InsertFlowTable(f.dstaddr, f, SysUptime, unix_secs, unix_nsecs, flow_sequence, engine_type, engine_id);
-                    Trapd.FlowList.get(f.dstaddr).getFlowQueue().enQueue(f.srcaddr);
+                if (StaticManager.FlowList.containsKey(f.dstaddr)) {
+                    //DBTest.getInstance().InsertFlowTable(f.dstaddr, f, SysUptime, unix_secs, unix_nsecs, flow_sequence, engine_type, engine_id);
+                    StaticManager.FlowList.get(f.dstaddr).flowQueue.enQueue(f.srcaddr);
+                    //f.printAll();
                 }
-                if (Trapd.FlowList.containsKey(f.srcaddr)) {
-                    DBTest.getInstance().InsertFlowTable(f.srcaddr, f, SysUptime, unix_secs, unix_nsecs, flow_sequence, engine_type, engine_id);
-                    Trapd.FlowList.get(f.srcaddr).getFlowQueue().enQueue(f.dstaddr);
-                }*/
+                if (StaticManager.FlowList.containsKey(f.srcaddr)) {
+                    //DBTest.getInstance().InsertFlowTable(f.srcaddr, f, SysUptime, unix_secs, unix_nsecs, flow_sequence, engine_type, engine_id);
+                    StaticManager.FlowList.get(f.srcaddr).flowQueue.enQueue(f.dstaddr);
+                    //f.printAll();
+                }
                 //f.printAll();
                 /*if (f.srcaddr != null && f.dstaddr != null) {
                     flows.add(f);

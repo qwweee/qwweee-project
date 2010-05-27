@@ -27,6 +27,7 @@ public class TaskSchedule extends Thread {
         this.setName("TaskSchedule");
         taskList = new ArrayList<TaskStruct>();
         isStop = false;
+        this.setPriority(Thread.MAX_PRIORITY);
         this.start();
     }
     /**

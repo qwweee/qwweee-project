@@ -22,6 +22,7 @@ public class DnsAnalysis extends Thread {
         this.setName("DnsAnalysis");
         this.queue = flowqueue;
         this.ip = ip;
+        this.setPriority(Thread.MAX_PRIORITY);
     }
     public void run() {
         while (true) {

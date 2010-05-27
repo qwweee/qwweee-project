@@ -36,6 +36,8 @@ public class NetFlowReceiver extends Thread{
         this.setName("NetFlowReceiver");
         this.port = Config.NETFLOWPORT;
         this.queue = StaticManager.NETFLOW_QUEUE;
+        this.setPriority(Thread.MAX_PRIORITY);
+        this.start();
     }
     /**
      * 執行thread 跑udp socket server接收netflow送來的訊息

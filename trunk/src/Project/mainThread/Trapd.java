@@ -72,7 +72,7 @@ public class Trapd {
             public void receivedTrap(TrapEvent trap) {
                 if (trap.getTrapType() == 0){
                     // TODO z done task 開機trap 後執行內容
-                    if (StaticManager.IPList.containsKey(trap.getRemoteHost())) {
+                    if (!StaticManager.IPList.containsKey(trap.getRemoteHost())) {
                         DetectSet data = new DetectSet(trap.getRemoteHost());
                         StaticManager.IPList.put(trap.getRemoteHost(), data);
                         StaticManager.FlowList.put(trap.getRemoteHost(), data);

@@ -153,8 +153,8 @@ public class DetectSet {
         if (!isLinkUp) {
             // TODO z done task 開始偵測
             sysThread.start();
-            Detection detect = new Detection(this);
-            detect.start();
+            new Detection(this);
+            
             swsnmptable.addListener();
             tcpsnmptable.addListener();
             

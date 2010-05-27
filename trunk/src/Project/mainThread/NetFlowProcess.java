@@ -30,6 +30,8 @@ public class NetFlowProcess extends Thread{
     private NetFlowProcess() {
         this.setName("NetFlowProcess");
         this.queue = StaticManager.NETFLOW_QUEUE;
+        this.setPriority(Thread.MAX_PRIORITY);
+        this.start();
     }
     /**
      * 處理netflow packet的thread
