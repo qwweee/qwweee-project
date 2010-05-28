@@ -12,6 +12,7 @@ import Project.config.Config;
 import Project.config.DBConfig;
 import Project.db.DBFunction;
 import Project.db.DatabaseFactory;
+import Project.struct.DetectSet;
 import Project.utils.SQLUtil;
 
 /**
@@ -29,7 +30,8 @@ public class Test {
         DBConfig.Load();
         DatabaseFactory.setDatabaseSettings(Config.DBDriver, Config.DBURL, Config.DBUser, Config.DBPassword, Config.DBMaxCon);
         DatabaseFactory.getInstance();
-        DBFunction.getInstance().initAllTable("127.0.0.1");
+        DetectSet set = new DetectSet("10.10.32.97");
+        set.setLinkUp();
         //selectDB();
     }
     /**

@@ -94,6 +94,10 @@ public class SnmpGetTable {
         table.setPollInterval(Config.PER_BOOT_DETECT_TIME);
     }
     public void addListener() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+        }
         table.addSnmpTableListener(listener);
     }
     public void rmListener() {

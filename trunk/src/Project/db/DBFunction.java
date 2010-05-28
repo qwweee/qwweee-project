@@ -49,7 +49,7 @@ public class DBFunction {
         boolean noerror = true;
         Connection con = null;
         PreparedStatement pstm = null;
-        System.out.println(sql);
+        //System.out.println(sql);
         try {
             con = DatabaseFactory.getInstance().getConnection();
             pstm = con.prepareStatement(sql);
@@ -69,6 +69,7 @@ public class DBFunction {
         PreparedStatement pstm = null;
         ResultSet rs = null;
         String sql = String.format(DBConfig.SEARCHIPTABLE, ip);
+        //System.out.println(sql);
         try {
             con = DatabaseFactory.getInstance().getConnection();
             pstm = con.prepareStatement(sql);
@@ -91,6 +92,7 @@ public class DBFunction {
         boolean noerror = true;
         Connection con = null;
         PreparedStatement pstm = null;
+        //System.out.println(DBConfig.INSERTIPTABLE);
         try {
             con = DatabaseFactory.getInstance().getConnection();
             pstm = con.prepareStatement(DBConfig.INSERTIPTABLE);
@@ -124,6 +126,7 @@ public class DBFunction {
         boolean noerror = true;
         Connection con = null;
         PreparedStatement pstm = null;
+        //System.out.println(DBConfig.INSERTDNSTABLE);
         try {
             con = DatabaseFactory.getInstance().getConnection();
             pstm = con.prepareStatement(DBConfig.INSERTDNSTABLE);
@@ -146,6 +149,7 @@ public class DBFunction {
         Connection con = null;
         PreparedStatement pstm = null;
         String sql = String.format(DBConfig.INSERTFLOWTABLE, ip);
+        //System.out.println(sql);
         try {
             con = DatabaseFactory.getInstance().getConnection();
             pstm = con.prepareStatement(sql);
@@ -190,6 +194,7 @@ public class DBFunction {
         Connection con = null;
         PreparedStatement pstm = null;
         String sql = String.format(DBConfig.INSERTSWTABLE, ip);
+        //System.out.println(sql);
         try {
             con = DatabaseFactory.getInstance().getConnection();
             pstm = con.prepareStatement(sql);
@@ -218,6 +223,7 @@ public class DBFunction {
         Connection con = null;
         PreparedStatement pstm = null;
         String sql = String.format(DBConfig.INSERTTCPTABLE, ip);
+        //System.out.println(sql);
         try {
             con = DatabaseFactory.getInstance().getConnection();
             pstm = con.prepareStatement(sql);
@@ -239,15 +245,58 @@ public class DBFunction {
         }
         return noerror;
     }
+    public boolean updateIPTable(String ip) {
+        boolean havechange = true;
+        Connection con = null;
+        PreparedStatement pstm = null;
+        //System.out.println(DBConfig.UPDATEIPTABLE);
+        try {
+            con = DatabaseFactory.getInstance().getConnection();
+            pstm = con.prepareStatement(DBConfig.UPDATEIPTABLE);
+            pstm.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            pstm.setString(2, ip);
+            pstm.execute();
+            SQLUtil.close(pstm, con);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            havechange = false;
+        } finally {
+            SQLUtil.close(pstm, con);
+        }
+        return havechange;
+    }
+    public boolean updateDNSTable(String ip, String dns, int status) {
+        boolean havechange = true;
+        Connection con = null;
+        PreparedStatement pstm = null;
+        //System.out.println(DBConfig.UPDATEDNSTABLE);
+        try {
+            con = DatabaseFactory.getInstance().getConnection();
+            pstm = con.prepareStatement(DBConfig.UPDATEDNSTABLE);
+            pstm.setString(1, ip);
+            pstm.setString(2, dns);
+            pstm.setInt(3, status);
+            pstm.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+            pstm.execute();
+            SQLUtil.close(pstm, con);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            havechange = false;
+        } finally {
+            SQLUtil.close(pstm, con);
+        }
+        return havechange;
+    }
     public int checkDNSTable(String ip, String dns) {
         int result = 0;
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
+        String sql = String.format(DBConfig.SEARCHDNSTABLE, dns);
+        //System.out.println(sql);
         try {
             con = DatabaseFactory.getInstance().getConnection();
-            pstm = con.prepareStatement(DBConfig.SEARCHDNSTABLE);
-            pstm.setString(1, dns);
+            pstm = con.prepareStatement(sql);
             rs = pstm.executeQuery();
             String tip = "";
             int status = 0;
@@ -275,46 +324,6 @@ public class DBFunction {
             SQLUtil.close(rs, pstm, con);
         }
         return result; //0為無對應資料 -1為錯誤 1為找到相同對應 2為對應異常 3為黑名單
-    }
-    public boolean updateIPTable(String ip) {
-        boolean havechange = true;
-        Connection con = null;
-        PreparedStatement pstm = null;
-        try {
-            con = DatabaseFactory.getInstance().getConnection();
-            pstm = con.prepareStatement(DBConfig.UPDATEIPTABLE);
-            pstm.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-            pstm.setString(2, ip);
-            pstm.execute();
-            SQLUtil.close(pstm, con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            havechange = false;
-        } finally {
-            SQLUtil.close(pstm, con);
-        }
-        return havechange;
-    }
-    public boolean updateDNSTable(String ip, String dns, int status) {
-        boolean havechange = true;
-        Connection con = null;
-        PreparedStatement pstm = null;
-        try {
-            con = DatabaseFactory.getInstance().getConnection();
-            pstm = con.prepareStatement(DBConfig.UPDATEDNSTABLE);
-            pstm.setString(1, ip);
-            pstm.setString(2, dns);
-            pstm.setInt(3, status);
-            pstm.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            pstm.execute();
-            SQLUtil.close(pstm, con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            havechange = false;
-        } finally {
-            SQLUtil.close(pstm, con);
-        }
-        return havechange;
     }
     
 }

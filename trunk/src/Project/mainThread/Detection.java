@@ -26,7 +26,6 @@ public class Detection extends Thread {
         host = data;
         host.starttime = System.currentTimeMillis();
         this.setPriority(Thread.MAX_PRIORITY);
-        this.start();
     }
     /**
      * 從開機時間開始算Config.DETECT_TIME_OPEN，每隔Config.THREAD_TIME_OPEN時間抓取SNMP資訊

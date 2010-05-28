@@ -6,6 +6,8 @@ package Project;
 import java.sql.SQLException;
 
 import Project.config.Config;
+import Project.config.DBConfig;
+import Project.db.DBFunction;
 import Project.db.DatabaseFactory;
 import Project.mainThread.CloseZombie;
 import Project.mainThread.NetFlowProcess;
@@ -26,8 +28,10 @@ public class Main {
      */
     public static void main(String[] args) throws SQLException {
         Config.Load();
+        DBConfig.Load();
         DatabaseFactory.setDatabaseSettings(Config.DBDriver, Config.DBURL, Config.DBUser, Config.DBPassword, Config.DBMaxCon);
         DatabaseFactory.getInstance();
+        DBFunction.getInstance();
         CloseZombie.getInstance();
         TaskSchedule.getInstance();
         NetFlowProcess.getInstance();

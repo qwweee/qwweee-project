@@ -126,7 +126,7 @@ public class DetectSet {
         this.starttime = System.currentTimeMillis();
         // TODO z done db 檢查ip table並建立建立DB，失敗System.exit(1)
         if (!DBFunction.getInstance().initAllTable(ip)) {
-            System.out.println("檢查ip table及建立DB錯誤!");
+            System.err.println("檢查ip table及建立DB錯誤!");
             System.exit(1);
         }
     }
@@ -158,7 +158,7 @@ public class DetectSet {
         if (!isLinkUp) {
             // TODO z done task 開始偵測
             sysThread.start();
-            new Detection(this);
+            new Detection(this).start();
             
             swsnmptable.addListener();
             tcpsnmptable.addListener();

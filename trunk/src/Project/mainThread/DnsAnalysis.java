@@ -43,8 +43,9 @@ public class DnsAnalysis extends Thread {
                 break;
             }
             String ip = (String)o;
+            String dns = "";
             try {
-                String dns = ReverseDNS.reverseDns(ip);
+                dns = ReverseDNS.reverseDns(ip);
                 if (dns.equalsIgnoreCase(ip)) {
                     continue;
                 }
@@ -70,9 +71,11 @@ public class DnsAnalysis extends Thread {
                 }
                 //System.out.println(dns+"\t\t"+ip);
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                System.err.println(ip+"\t"+dns+" error!");
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                System.err.println(ip+"\t"+dns+" error!");
             }
         }
         System.out.println(ip+" dns analysis thread end!");
