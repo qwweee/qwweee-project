@@ -12,69 +12,9 @@ import Project.utils.StreamUtil;
 /**
  * DB讀取設定檔物件
  * @author bbxp
- * TODO db 重新規劃存入資料庫格式 SWTable TCPTable (UDPTable)
+ * TODO z done db 重新規劃存入資料庫格式 SWTable TCPTable (UDPTable)
  */
 public final class DBConfig {
-	/**
-	 * 建立新的資料庫
-	 */
-	public static String CREATEDB;
-	/**
-	 * 搜尋在IPTABLE內是否有資料
-	 */
-	public static String SEARCHIPTABLE;
-	/**
-	 * 搜尋在DNSTABLE內是否有相對應的IP和DNS
-	 */
-	public static String SEARCHDNSTABLE;
-	/**
-	 * 更新IPTABLE內IP的更新時間
-	 */
-	public static String UPDATEIPTABLE;
-	/**
-	 * 更新DNSTABLE內status和時間
-	 */
-	public static String UPDATEDNSTABLE;
-	/**
-	 * 插入一筆IP資料到IPTABLE資料表內
-	 */
-	public static String INSERTIPTABLE;
-	/**
-	 * 建立software table的資料表
-	 */
-	public static String CREATESWTABLE;
-	/**
-	 * 建立TCP connection table的資料表
-	 */
-	public static String CREATETCPTABLE;
-	/**
-	 * 建立TCP connection table的資料表
-	 */
-	public static String CREATEUDPTABLE;
-    /**
-     * 建立NetFlow table的資料表
-     */
-    public static String CREATEFLOWTABLE;
-	/**
-	 * 插入一筆TCP connection資料到tcp table內
-	 */
-	public static String INSERTTCPTABLE;
-	/**
-     * 插入一筆UDP資料到udp table內
-     */
-    public static String INSERTUDPTABLE;
-    /**
-     * 插入一筆software資料到software table內
-     */
-    public static String INSERTSWTABLE;
-    /**
-     * 插入一筆Netflow資料到flow table內
-     */
-    public static String INSERTFLOWTABLE;
-    /**
-     * 插入一筆DNS IP對應資料到dns table內
-     */
-    public static String INSERTDNSTABLE;
 	/**
      * 設定檔的位置
      */
@@ -92,22 +32,24 @@ public final class DBConfig {
             Properties settings = new Properties();
             is = new FileInputStream(new File(CONFIG_FILE));
             settings.load(is);
-            is.close();
-            CREATEDB = settings.getProperty("CreateDB", "CREATE DATABASE ? ENCODING utf8;");
-            SEARCHIPTABLE = settings.getProperty("SearchIPTable", "SELECT * FROM `project`.`iptable` WHERE ip = ?;");
-            SEARCHDNSTABLE = settings.getProperty("SearchDNSTable", "SELECT `ip`, `status`, `time` FROM `project`.`dnstable` WHERE dns = ?;");
-            UPDATEIPTABLE = settings.getProperty("UpdateIPTable", "UPDATE `iptable` SET `update`=? WHERE (`ip`=?) ;");
-            UPDATEDNSTABLE = settings.getProperty("UpdateDNSTable", "UPDATE `dnstable` SET `status`=?,`time`=? WHERE ip = ?;");
+            StreamUtil.close(is);
+            // TODO db SQL語法
+            // PROJECT DB
+            CREATEDB = settings.getProperty("CreateDB", "CREATE DATABASE `%s`;");
+            SEARCHIPTABLE = settings.getProperty("SearchIPTable", "SELECT * FROM `project`.`iptable` WHERE ip = '%s';"); 
             INSERTIPTABLE = settings.getProperty("InsertIPTable", "INSERT INTO `iptable` (`id`,`ip`,`update`) VALUES (NULL,?,?);");
-            CREATESWTABLE = settings.getProperty("CreateSWTable", "`swtable` (  `index` int(10) NOT NULL,  `name` varchar(100) NOT NULL,  `id` varchar(10) NOT NULL,  `path` text NOT NULL,  `parameters` text NOT NULL,  `type` varchar(20) NOT NULL,  `status` varchar(15) NOT NULL,  `start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',  `count` int(2) NOT NULL,  PRIMARY KEY (`index`,`start`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-            CREATETCPTABLE = settings.getProperty("CreateTCPTable", "`tcptable` (  `localaddr` varchar(15) NOT NULL,  `localport` int(5) NOT NULL,  `remaddr` varchar(15) NOT NULL,  `remport` int(5) NOT NULL,  `status` varchar(15) NOT NULL,  `start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,  `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',  `count` int(2) NOT NULL,  PRIMARY KEY (`localaddr`,`localport`,`remaddr`,`remport`,`start`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-            CREATEUDPTABLE = settings.getProperty("CreateUDPTable", "`udptable` (  `localaddr` varchar(15) NOT NULL,  `localport` int(5) NOT NULL,  `start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,  `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',  `count` int(2) NOT NULL,  PRIMARY KEY (`localaddr`,`localport`,`start`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-            CREATEFLOWTABLE = settings.getProperty("CreateFlowTable", "`flow` ( RouterIP VARCHAR(15) NOT NULL, SysUptime BIGINT,  Secs BIGINT, Nsecs BIGINT, Flow_Sequence BIGINT NOT NULL, Engine_Type INT NOT NULL, Engine_ID INT NOT NULL, SrcAddr VARCHAR(15) NOT NULL, DstAddr VARCHAR(15) NOT NULL, NextHop VARCHAR(15) NOT NULL, Input INT NOT NULL, Output INT NOT NULL, dPkts BIGINT, dOctets BIGINT, aFirst BIGINT, aLast BIGINT, SrcPort INT NOT NULL, DstPort INT NOT NULL, Tcp_Flags INT NOT NULL, Prot INT NOT NULL, TOS INT NOT NULL, Src_As INT NOT NULL, Dst_As INT NOT NULL, Src_Mask INT NOT NULL, Dst_Mask INT NOT NULL, Stamp timestamp NULL );");
-            INSERTTCPTABLE = settings.getProperty("InsertTCPTable", "`tcptable` (`localaddr`,`localport`,`remaddr`,`remport`,`status`,`start`,`end`,`count`) VALUES (?,?,?,?,?,?,?,?);");
-            INSERTUDPTABLE = settings.getProperty("InsertUDPTable", "`udptable` (`localaddr`,`localport`,`start`,`end`,`count`) VALUES (?,?,?,?,?);");
-            INSERTSWTABLE = settings.getProperty("InsertSWTable", "`swtable` (`index`,`name`,`id`,`path`,`parameters`,`type`,`status`,`start`,`end`,`count`) VALUES (?,?,?,?,?,?,?,?,?,?);");
-            INSERTFLOWTABLE = settings.getProperty("InsertFlowTable", "`flow` ( RouterIP, SysUptime, Secs, Nsecs, Flow_Sequence, Engine_Type, Engine_ID, SrcAddr, DstAddr, NextHop, Input, Output, dPkts, dOctets, aFirst, aLast, SrcPort, DstPort, Tcp_Flags, Prot, TOS, Src_As, Dst_As, Src_Mask, Dst_Mask ,Stamp) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?);");
+            UPDATEIPTABLE = settings.getProperty("UpdateIPTable", "UPDATE `iptable` SET `update`=? WHERE (`ip`=?);");
+            SEARCHDNSTABLE = settings.getProperty("SearchDNSTable", "SELECT `ip`, `status`, `time` FROM `project`.`dnstable` WHERE dns = '%s';");
             INSERTDNSTABLE = settings.getProperty("InsertDNSTable", "INSERT INTO `dnstable` (`no`,`ip`,`dns`,`status`,`time`) VALUES (NULL,?,?,?,?);");
+            UPDATEDNSTABLE = settings.getProperty("UpdateDNSTable", "UPDATE `dnstable` SET `status`=?,`time`=? WHERE `ip` = ?;");
+            // HOST PROJECT
+            CREATEFLOWTABLE = settings.getProperty("CreateFlowTable", "CREATE TABLE `%s`.`flow` (  `RouterIP` varchar(15) NOT NULL,  `SysUptime` bigint(20) DEFAULT NULL,  `Secs` bigint(20) DEFAULT NULL,  `Nsecs` bigint(20) DEFAULT NULL,  `Flow_Sequence` bigint(20) NOT NULL,  `Engine_Type` int(11) NOT NULL,  `Engine_ID` int(11) NOT NULL,  `SrcAddr` varchar(15) NOT NULL,  `DstAddr` varchar(15) NOT NULL,  `NextHop` varchar(15) NOT NULL,  `Input` int(11) NOT NULL,  `Output` int(11) NOT NULL,  `dPkts` bigint(20) DEFAULT NULL,  `dOctets` bigint(20) DEFAULT NULL,  `aFirst` bigint(20) DEFAULT NULL,  `aLast` bigint(20) DEFAULT NULL,  `SrcPort` int(11) NOT NULL,  `DstPort` int(11) NOT NULL,  `Tcp_Flags` int(11) NOT NULL,  `Prot` int(11) NOT NULL,  `TOS` int(11) NOT NULL,  `Src_As` int(11) NOT NULL,  `Dst_As` int(11) NOT NULL,  `Src_Mask` int(11) NOT NULL,  `Dst_Mask` int(11) NOT NULL,  `Stamp` timestamp NULL DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+            CREATESWTABLE = settings.getProperty("CreateSWTable", "CREATE TABLE `%s`.`swtable` (  `index` int(10) NOT NULL,  `name` varchar(100) NOT NULL,  `id` varchar(10) NOT NULL,  `path` text NOT NULL,  `parameters` text NOT NULL,  `type` varchar(20) NOT NULL,  `status` varchar(15) NOT NULL,  `start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',  `map` text NOT NULL,  PRIMARY KEY (`index`,`start`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+            CREATETCPTABLE = settings.getProperty("CreateTCPTable", "CREATE TABLE `%s`.`tcptable` (  `localaddr` varchar(15) NOT NULL,  `localport` int(5) NOT NULL,  `remaddr` varchar(15) NOT NULL,  `remport` int(5) NOT NULL,  `status` varchar(15) NOT NULL,  `start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,  `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',  `map` text NOT NULL,  PRIMARY KEY (`localaddr`,`localport`,`remaddr`,`remport`,`start`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+            INSERTFLOWTABLE = settings.getProperty("InsertFlowTable", "INSERT INTO `%s`.`flow` ( RouterIP, SysUptime, Secs, Nsecs, Flow_Sequence, Engine_Type, Engine_ID, SrcAddr, DstAddr, NextHop, Input, Output, dPkts, dOctets, aFirst, aLast, SrcPort, DstPort, Tcp_Flags, Prot, TOS, Src_As, Dst_As, Src_Mask, Dst_Mask ,Stamp) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?);");
+            INSERTSWTABLE = settings.getProperty("InsertSWTable", "INSERT INTO `%s`.`swtable` (`index`,`name`,`id`,`path`,`parameters`,`type`,`status`,`start`,`end`,`count`) VALUES (?,?,?,?,?,?,?,?,?,?);");
+            INSERTTCPTABLE = settings.getProperty("InsertTCPTable", "INSERT INTO `%s`.`tcptable` (`localaddr`,`localport`,`remaddr`,`remport`,`status`,`start`,`end`,`map`) VALUES ('?','?','?','?','?','?','?','?');");
+            //CREATEDB = settings.getProperty("", "");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.out.println("Config error");
@@ -120,4 +62,20 @@ public final class DBConfig {
             StreamUtil.close(is);
         }
     }
+    public static String CREATEDB;
+    public static String CREATEFLOWTABLE;
+    public static String CREATESWTABLE;
+    public static String CREATETCPTABLE;
+    
+    public static String SEARCHIPTABLE;
+    public static String SEARCHDNSTABLE;
+    
+    public static String INSERTIPTABLE;
+    public static String INSERTDNSTABLE;
+    public static String INSERTFLOWTABLE;
+    public static String INSERTSWTABLE;
+    public static String INSERTTCPTABLE;
+    
+    public static String UPDATEIPTABLE;
+    public static String UPDATEDNSTABLE;
 }

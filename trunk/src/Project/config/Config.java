@@ -121,7 +121,7 @@ public final class Config {
             Properties settings = new Properties();
             is = new FileInputStream(new File(CONFIG_FILE));
             settings.load(is);
-            is.close();
+            StreamUtil.close(is);
             /**
              * port setup
              */

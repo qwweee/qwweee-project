@@ -1,9 +1,11 @@
 package Project.mainThread.snmp.task;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import Project.StaticManager;
 import Project.config.Config;
+import Project.db.DBFunction;
 import Project.html.HTML;
 import Project.struct.DetectSet;
 import Project.struct.TCPConnectStruct;
@@ -92,10 +94,18 @@ public class TaskTCPListener implements SnmpTableListener{
         mapsize = 0;
         host.clearTCPHash();
     }
- // TODO db 寫入db內的tcp table
+ // TODO z done db 寫入db內的tcp table
     private void writeDB() {
         if (host.tcp.size() == 0) {
             return;
+        }
+        ArrayList<TCPConnectStruct> data = new ArrayList<TCPConnectStruct>();
+        data.addAll(host.tcp.values());
+        for (int i = 0 ; i < data.size() ; i ++) {
+            data.get(i).EndTime = System.currentTimeMillis();
+            if (!DBFunction.getInstance().insertTCPTable(host.ip, data.get(i))) {
+                System.err.println("新增TCPTable資料錯誤!");
+            }
         }
     }
     @Override

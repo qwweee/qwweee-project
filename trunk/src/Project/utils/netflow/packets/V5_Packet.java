@@ -1,6 +1,7 @@
 package Project.utils.netflow.packets;
 
 import Project.StaticManager;
+import Project.db.DBFunction;
 import Project.utils.netflow.DoneException;
 import Project.utils.netflow.Util;
 
@@ -85,14 +86,14 @@ public class V5_Packet {
             V5_Flow f = null;
             try {
                 f = new V5_Flow(RouterIP, buf, p);
-                // TODO db 將flow資料存入資料庫
+                // TODO z done db 將flow資料存入資料庫
                 if (StaticManager.FlowList.containsKey(f.dstaddr)) {
-                    //DBTest.getInstance().InsertFlowTable(f.dstaddr, f, SysUptime, unix_secs, unix_nsecs, flow_sequence, engine_type, engine_id);
+                    DBFunction.getInstance().insertFlowTable(f.dstaddr, f, SysUptime, unix_secs, unix_nsecs, flow_sequence, engine_type, engine_id);
                     StaticManager.FlowList.get(f.dstaddr).flowQueue.enQueue(f.srcaddr);
                     //f.printAll();
                 }
                 if (StaticManager.FlowList.containsKey(f.srcaddr)) {
-                    //DBTest.getInstance().InsertFlowTable(f.srcaddr, f, SysUptime, unix_secs, unix_nsecs, flow_sequence, engine_type, engine_id);
+                    DBFunction.getInstance().insertFlowTable(f.srcaddr, f, SysUptime, unix_secs, unix_nsecs, flow_sequence, engine_type, engine_id);
                     StaticManager.FlowList.get(f.srcaddr).flowQueue.enQueue(f.dstaddr);
                     //f.printAll();
                 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import Project.StaticManager;
 import Project.config.Config;
+import Project.db.DBFunction;
 import Project.mainThread.Detection;
 import Project.mainThread.DnsAnalysis;
 import Project.mainThread.TaskSchedule;
@@ -123,7 +124,11 @@ public class DetectSet {
         this.tcpsnmptable = new SnmpGetTable(ip, community, Config.TCPCONNECT, tcplistener);
         this.swsnmptable = new SnmpGetTable(ip, community, Config.SWRUNTABLE, swlistener);
         this.starttime = System.currentTimeMillis();
-        // TODO db 檢查ip table並建立建立DB，失敗System.exit(1)
+        // TODO z done db 檢查ip table並建立建立DB，失敗System.exit(1)
+        if (!DBFunction.getInstance().initAllTable(ip)) {
+            System.out.println("檢查ip table及建立DB錯誤!");
+            System.exit(1);
+        }
     }
     /**
      * 結束Analysis Thread

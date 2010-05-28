@@ -1,9 +1,11 @@
 package Project.mainThread.snmp.task;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import Project.StaticManager;
 import Project.config.Config;
+import Project.db.DBFunction;
 import Project.html.HTML;
 import Project.struct.DetectSet;
 import Project.struct.SWRunTableStruct;
@@ -92,10 +94,18 @@ public class TaskSWRunListener implements SnmpTableListener{
         mapcount = 0;
         host.clearSWHash();
     }
-    // TODO db 寫入db內的swrun table
+    // TODO z done db 寫入db內的swrun table
     private void writeDB() {
         if (host.sw.size() == 0) {
             return;
+        }
+        ArrayList<SWRunTableStruct> data = new ArrayList<SWRunTableStruct>();
+        data.addAll(host.sw.values());
+        for (int i = 0 ; i < data.size() ; i ++) {
+            data.get(i).EndTime = System.currentTimeMillis();
+            if (!DBFunction.getInstance().insertSWTable(host.ip, data.get(i))) {
+                System.err.println("新增SWTable資料錯誤!");
+            }
         }
     }
     @Override

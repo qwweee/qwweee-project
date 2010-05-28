@@ -1,6 +1,7 @@
 package Project.mainThread;
 import java.io.IOException;
 
+import Project.db.DBFunction;
 import Project.utils.Queue;
 import Project.utils.ReverseDNS;
 
@@ -9,7 +10,18 @@ import Project.utils.ReverseDNS;
  *
  */
 public class DnsAnalysis extends Thread {
-    
+    /**
+     * dns分析 正常
+     */
+    public final static int NORMAL = 0;
+    /**
+     * dns分析 異常 對應不同ip
+     */
+    public final static int WARRING = 1;
+    /**
+     * dns分析 黑名單
+     */
+    public final static int BLACKLIST = 2;
     /**
      * 
      */
@@ -36,20 +48,26 @@ public class DnsAnalysis extends Thread {
                 if (dns.equalsIgnoreCase(ip)) {
                     continue;
                 }
-                // TODO db 檢查dns table
-                /*int haven = DBTest.getInstance().CheckDNSTable(ip, dns);
-                if (haven == 0) { //無對應dns資料
-                    if (!ip.equalsIgnoreCase(dns)) {
-                        DBTest.getInstance().InsertDNSTable(ip, dns, 0);
+                // TODO z done db 檢查dns table
+                int result = DBFunction.getInstance().checkDNSTable(ip, dns);
+                switch (result) {
+                case 0: //無對應dns資料
+                    if (!ip.equalsIgnoreCase(dns)) { //ip和dns不同時 新增
+                        DBFunction.getInstance().insertDNSTable(ip, dns, DnsAnalysis.NORMAL);
                     }
-                } else if (haven == 1) { //對應到相同dns資料
-
-                } else if (haven > 1){
-                    // TODO event 通知管理者
-                } else {
-                    // 錯誤
-                    throw new Exception("新增DNSTable資料錯誤");
-                }*/
+                    break;
+                case 1: //對應到相同dns資料
+                    DBFunction.getInstance().updateDNSTable(ip, dns, DnsAnalysis.NORMAL);
+                    break;
+                case 2: // TODO event 警告通知管理者 檢測到有對應異常
+                    DBFunction.getInstance().updateDNSTable(ip, dns, DnsAnalysis.WARRING);
+                    break;
+                case 3: // TODO event 通知管理者 黑名單
+                    DBFunction.getInstance().updateDNSTable(ip, dns, DnsAnalysis.BLACKLIST);
+                    break;
+                default: //錯誤
+                    throw new Exception("DnsAnalysis 錯誤!");
+                }
                 //System.out.println(dns+"\t\t"+ip);
             } catch (IOException e) {
                 e.printStackTrace();
