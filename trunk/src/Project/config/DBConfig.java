@@ -34,6 +34,7 @@ public final class DBConfig {
             settings.load(is);
             StreamUtil.close(is);
             // TODO db SQL語法
+            CLEARTABLE = settings.getProperty("ClearTable", "TRUNCATE TABLE `%s`.`%s`;");
             // PROJECT DB
             CREATEDB = settings.getProperty("CreateDB", "CREATE DATABASE `%s`;");
             SEARCHIPTABLE = settings.getProperty("SearchIPTable", "SELECT * FROM `project`.`iptable` WHERE ip = '%s';"); 
@@ -78,4 +79,6 @@ public final class DBConfig {
     
     public static String UPDATEIPTABLE;
     public static String UPDATEDNSTABLE;
+    
+    public static String CLEARTABLE;
 }

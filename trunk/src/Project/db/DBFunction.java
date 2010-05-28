@@ -45,6 +45,10 @@ public class DBFunction {
         String sql = String.format(DBConfig.CREATETCPTABLE, ip);
         return execSQL(sql);
     }
+    private boolean clearTable(String dbname, String tablename) {
+        String sql = String.format(DBConfig.CLEARTABLE, dbname,tablename);
+        return execSQL(sql);
+    }
     private boolean execSQL(String sql) {
         boolean noerror = true;
         Connection con = null;
@@ -111,7 +115,10 @@ public class DBFunction {
     public boolean initAllTable(String ip) {
         boolean noerror = true;
         // TODO z done db check IPList
-        if (checkIPTable(ip)) {
+        if (checkIPTable(ip)) { // 已經有建立DB過
+            clearTable(ip, "flow");
+            clearTable(ip, "swtable");
+            clearTable(ip, "tcptable");
             return noerror;
         }
         // TODO z done db create DB and all table, insertIPTable
