@@ -49,7 +49,7 @@ public final class DBConfig {
             CREATETCPTABLE = settings.getProperty("CreateTCPTable", "CREATE TABLE `%s`.`tcptable` (  `localaddr` varchar(15) NOT NULL,  `localport` int(5) NOT NULL,  `remaddr` varchar(15) NOT NULL,  `remport` int(5) NOT NULL,  `status` varchar(15) NOT NULL,  `start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,  `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',  `map` text NOT NULL,  PRIMARY KEY (`localaddr`,`localport`,`remaddr`,`remport`,`start`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
             INSERTFLOWTABLE = settings.getProperty("InsertFlowTable", "INSERT INTO `%s`.`flow` ( RouterIP, SysUptime, Secs, Nsecs, Flow_Sequence, Engine_Type, Engine_ID, SrcAddr, DstAddr, NextHop, Input, Output, dPkts, dOctets, aFirst, aLast, SrcPort, DstPort, Tcp_Flags, Prot, TOS, Src_As, Dst_As, Src_Mask, Dst_Mask ,Stamp) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?);");
             INSERTSWTABLE = settings.getProperty("InsertSWTable", "INSERT INTO `%s`.`swtable` (`index`,`name`,`id`,`path`,`parameters`,`type`,`status`,`start`,`end`,`count`) VALUES (?,?,?,?,?,?,?,?,?,?);");
-            INSERTTCPTABLE = settings.getProperty("InsertTCPTable", "INSERT INTO `%s`.`tcptable` (`localaddr`,`localport`,`remaddr`,`remport`,`status`,`start`,`end`,`map`) VALUES ('?','?','?','?','?','?','?','?');");
+            INSERTTCPTABLE = settings.getProperty("InsertTCPTable", "INSERT INTO `%s`.`tcptable` (`localaddr`,`localport`,`remaddr`,`remport`,`status`,`start`,`end`,`map`) VALUES (?,?,?,?,?,?,?,?);");
             //CREATEDB = settings.getProperty("", "");
         } catch (FileNotFoundException e) {
             e.printStackTrace();

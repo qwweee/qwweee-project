@@ -116,6 +116,7 @@ public class DBFunction {
         boolean noerror = true;
         // TODO z done db check IPList
         if (checkIPTable(ip)) { // 已經有建立DB過
+            System.out.println("clear table");
             clearTable(ip, "flow");
             clearTable(ip, "swtable");
             clearTable(ip, "tcptable");

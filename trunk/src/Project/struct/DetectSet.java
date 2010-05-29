@@ -117,6 +117,8 @@ public class DetectSet {
         this.analysis = new DnsAnalysis(flowQueue, ip);
         this.tasksnmpget = new TaskSnmpGet(snmp, this, Config.SYSUPTIME);
         this.sysThread = new Thread(tasksnmpget);
+        this.sysThread.setName("SNMPGet");
+        this.sysThread.setPriority(Thread.MAX_PRIORITY);
         this.fswcount = 0;
         this.ftcpcount = 0;
         this.swlistener = new TaskSWRunListener(this);

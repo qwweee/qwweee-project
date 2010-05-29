@@ -54,8 +54,8 @@ public class TaskTCPListener implements SnmpTableListener{
         count++;
         mapcount++;
         if (mapcount == mapsize) {
-            writeFile();
             writeDB();
+            writeFile();
         }
         // TODO z done 開機後檢測時間結束
         if (count == Config.BOOT_DETECT_RANGE*60/Config.PER_BOOT_DETECT_TIME && isBoot){
@@ -77,8 +77,8 @@ public class TaskTCPListener implements SnmpTableListener{
     private void stopListener(SnmpTable table) {
         table.stopPollingTable();
         table.removeSnmpTableListener(this);
-        writeFile();
         writeDB();
+        writeFile();
         System.gc();
     }
     private void writeFile() {
