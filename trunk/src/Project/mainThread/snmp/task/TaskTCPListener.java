@@ -103,7 +103,7 @@ public class TaskTCPListener implements SnmpTableListener{
         data.addAll(host.tcp.values());
         for (int i = 0 ; i < data.size() ; i ++) {
             data.get(i).EndTime = System.currentTimeMillis();
-            if (!DBFunction.getInstance().insertTCPTable(host.ip, data.get(i))) {
+            if (!DBFunction.getInstance().insertTCPTable(host.ip, data.get(i), isBoot)) {
                 System.err.println("新增TCPTable資料錯誤!");
             }
         }

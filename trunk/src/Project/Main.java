@@ -37,14 +37,12 @@ public class Main {
         NetFlowProcess.getInstance();
         NetFlowReceiver.getInstance();
         Trapd.getInstance();
-        //test();
+        test();
     }
     private static void test() {
         DetectSet data = new DetectSet("163.22.32.101");
         data.setLinkUp();
-        DetectSet data2 = new DetectSet("10.10.32.97");
+        DetectSet data2 = new DetectSet("127.0.0.1");
         data2.setLinkUp();
-        DetectSet data3 = new DetectSet("10.10.64.81");
-        data3.setLinkUp();
     }
 }

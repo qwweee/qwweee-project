@@ -123,6 +123,7 @@ public class DBFunction {
             return noerror;
         }
         // TODO z done db create DB and all table, insertIPTable
+        System.out.println("create table");
         noerror &= createDB(ip);
         noerror &= insertIPTable(ip);
         noerror &= createFlowTable(ip);
@@ -197,7 +198,7 @@ public class DBFunction {
         }
         return noerror;
     }
-    public boolean insertSWTable(String ip, SWRunTableStruct data) {
+    public boolean insertSWTable(String ip, SWRunTableStruct data, boolean isboot) {
         boolean noerror = true;
         Connection con = null;
         PreparedStatement pstm = null;
@@ -216,6 +217,7 @@ public class DBFunction {
             pstm.setTimestamp(8, new Timestamp(data.StartTime));
             pstm.setTimestamp(9, new Timestamp(data.EndTime));
             pstm.setString(10, new String(data.map));
+            pstm.setInt(11, (isboot)?1:0);
             pstm.execute();
             SQLUtil.close(pstm, con);
         } catch (SQLException e) {
@@ -226,7 +228,7 @@ public class DBFunction {
         }
         return noerror;
     }
-    public boolean insertTCPTable(String ip, TCPConnectStruct data) {
+    public boolean insertTCPTable(String ip, TCPConnectStruct data, boolean isboot) {
         boolean noerror = true;
         Connection con = null;
         PreparedStatement pstm = null;
@@ -243,6 +245,7 @@ public class DBFunction {
             pstm.setTimestamp(6, new Timestamp(data.StartTime));
             pstm.setTimestamp(7, new Timestamp(data.EndTime));
             pstm.setString(8, new String(data.map));
+            pstm.setInt(9, (isboot)?1:0);
             pstm.execute();
             SQLUtil.close(pstm, con);
         } catch (SQLException e) {

@@ -103,7 +103,7 @@ public class TaskSWRunListener implements SnmpTableListener{
         data.addAll(host.sw.values());
         for (int i = 0 ; i < data.size() ; i ++) {
             data.get(i).EndTime = System.currentTimeMillis();
-            if (!DBFunction.getInstance().insertSWTable(host.ip, data.get(i))) {
+            if (!DBFunction.getInstance().insertSWTable(host.ip, data.get(i), isBoot)) {
                 System.err.println("新增SWTable資料錯誤!");
             }
         }
