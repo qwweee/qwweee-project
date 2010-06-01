@@ -4,7 +4,7 @@ Source Host: localhost
 Source Database: project
 Target Host: localhost
 Target Database: project
-Date: 2010/5/29 ¤W¤È 01:25:12
+Date: 2010/6/1 ¤U¤È 05:47:47
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -14,7 +14,6 @@ SET FOREIGN_KEY_CHECKS=0;
 CREATE TABLE `blacklist` (
   `no` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `id` varchar(10) NOT NULL,
   `path` text NOT NULL,
   `parameters` text NOT NULL,
   `type` varchar(20) NOT NULL,

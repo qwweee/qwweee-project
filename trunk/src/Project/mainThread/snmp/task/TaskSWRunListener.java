@@ -44,7 +44,7 @@ public class TaskSWRunListener implements SnmpTableListener{
                 value.Name = table.getValueAt(i,1).toString();
                 value.ID = table.getValueAt(i,2).toString();
                 value.Path = table.getValueAt(i,3).toString();
-                value.Parameters = table.getValueAt(i,4).toString();
+                value.Parametes = table.getValueAt(i,4).toString();
                 value.Type = table.getValueAt(i,5).toString();
                 value.Status = table.getValueAt(i,6).toString();
                 value.map[mapcount] = 1;

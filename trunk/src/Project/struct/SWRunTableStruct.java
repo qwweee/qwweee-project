@@ -31,7 +31,7 @@ public class SWRunTableStruct {
     /**
      * hrSWRunParameters
      */
-    public String Parameters;
+    public String Parametes;
     /**
      * hrSWRunType
      */
@@ -61,7 +61,7 @@ public class SWRunTableStruct {
      *
      */
     public void print() {
-        System.out.println(Index+"\t"+Name+"\t"+ID+"\t"+Path+"\t"+Parameters+"\t"+Type+"\t"+Status+"\t"+Header.timeformat.format(StartTime));
+        System.out.println(Index+"\t"+Name+"\t"+ID+"\t"+Path+"\t"+Parametes+"\t"+Type+"\t"+Status+"\t"+Header.timeformat.format(StartTime));
         for (int i = 0 ; i < map.length ; i ++) {
             System.out.print(map[i]+"\t");
         }

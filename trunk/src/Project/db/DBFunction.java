@@ -8,8 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import Project.config.DBConfig;
+import Project.struct.BlackListStruct;
 import Project.struct.SWRunTableStruct;
 import Project.struct.TCPConnectStruct;
 import Project.utils.SQLUtil;
@@ -211,7 +213,7 @@ public class DBFunction {
             pstm.setString(2, data.Name);
             pstm.setString(3, data.ID);
             pstm.setString(4, data.Path);
-            pstm.setString(5, data.Parameters);
+            pstm.setString(5, data.Parametes);
             pstm.setString(6, data.Type);
             pstm.setString(7, data.Status);
             pstm.setTimestamp(8, new Timestamp(data.StartTime));
@@ -336,5 +338,116 @@ public class DBFunction {
         }
         return result; //0為無對應資料 -1為錯誤 1為找到相同對應 2為對應異常 3為黑名單
     }
-    
+    public String[] GetAllIPList() {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        ArrayList<String> data = new ArrayList<String>();
+        try {
+            con = DatabaseFactory.getInstance().getConnection();
+            pstm = con.prepareStatement(DBConfig.GETALLIPLIST);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                data.add(rs.getString(1));
+            }
+            SQLUtil.close(rs, pstm, con);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            SQLUtil.close(rs, pstm, con);
+        }
+        String[] result = new String[data.size()];
+        result = data.toArray(result);
+        return result;
+    }
+    public SWRunTableStruct[] GetSWRunTable(String ip, int type) {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        String sql = String.format(DBConfig.GETSWRUNTABLE, ip);
+        ArrayList<SWRunTableStruct> data = new ArrayList<SWRunTableStruct>();
+        try {
+            con = DatabaseFactory.getInstance().getConnection();
+            pstm = con.prepareStatement(sql);
+            pstm.setInt(1, type);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                SWRunTableStruct set = new SWRunTableStruct();
+                set.Index = rs.getInt(1);
+                set.Name = rs.getString(2);
+                set.ID = rs.getString(3);
+                set.Path = rs.getString(4);
+                set.Parametes = rs.getString(5);
+                set.Type = rs.getString(6);
+                set.Status = rs.getString(7);
+                set.StartTime = rs.getTimestamp(8).getTime();
+                set.EndTime = rs.getTimestamp(9).getTime();
+                set.map = rs.getBytes(10);
+                data.add(set);
+            }
+            SQLUtil.close(rs, pstm, con);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            SQLUtil.close(rs, pstm, con);
+        }
+        SWRunTableStruct[] result = new SWRunTableStruct[data.size()];
+        result = data.toArray(result);
+        return result;
+    }
+    public BlackListStruct[] GetBlackList() {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        ArrayList<BlackListStruct> data = new ArrayList<BlackListStruct>();
+        try {
+            con = DatabaseFactory.getInstance().getConnection();
+            pstm = con.prepareStatement(DBConfig.GETBLACKLIST);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                BlackListStruct set = new BlackListStruct();
+                set.No = rs.getInt(1);
+                set.Name = rs.getString(2);
+                set.Path = rs.getString(3);
+                set.Paraments = rs.getString(4);
+                set.Type = rs.getString(5);
+                set.Status = rs.getInt(6);
+                data.add(set);
+            }
+            SQLUtil.close(rs, pstm, con);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            SQLUtil.close(rs, pstm, con);
+        }
+        BlackListStruct[] result = new BlackListStruct[data.size()];
+        result = data.toArray(result);
+        return result;
+    }
+    public boolean insertBlackList(SWRunTableStruct data, int type) {
+        boolean noerror = true;
+        Connection con = null;
+        PreparedStatement pstm = null;
+        //System.out.println(DBConfig.INSERTDNSTABLE);
+        try {
+            con = DatabaseFactory.getInstance().getConnection();
+            pstm = con.prepareStatement(DBConfig.INSERTBLACKLIST);
+            pstm.setString(1, data.Name);
+            pstm.setString(2, data.Path);
+            pstm.setString(3, data.Parametes);
+            pstm.setString(4, data.Type);
+            pstm.setInt(5, type);
+            pstm.execute();
+            SQLUtil.close(pstm, con);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            noerror = false;
+        } finally {
+            SQLUtil.close(pstm, con);
+        }
+        return noerror;
+    }
+    public boolean clearBlackList() {
+        return clearTable("project", "blacklist");
+    }
 }

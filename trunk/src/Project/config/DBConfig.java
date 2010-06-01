@@ -37,12 +37,12 @@ public final class DBConfig {
             CLEARTABLE = settings.getProperty("ClearTable", "TRUNCATE TABLE `%s`.`%s`;");
             // PROJECT DB
             CREATEDB = settings.getProperty("CreateDB", "CREATE DATABASE `%s`;");
-            SEARCHIPTABLE = settings.getProperty("SearchIPTable", "SELECT * FROM `project`.`iptable` WHERE ip = '%s';"); 
-            INSERTIPTABLE = settings.getProperty("InsertIPTable", "INSERT INTO `iptable` (`id`,`ip`,`update`) VALUES (NULL,?,?);");
-            UPDATEIPTABLE = settings.getProperty("UpdateIPTable", "UPDATE `iptable` SET `update`=? WHERE (`ip`=?);");
-            SEARCHDNSTABLE = settings.getProperty("SearchDNSTable", "SELECT `ip`, `status`, `time` FROM `project`.`dnstable` WHERE dns = '%s';");
-            INSERTDNSTABLE = settings.getProperty("InsertDNSTable", "INSERT INTO `dnstable` (`no`,`ip`,`dns`,`status`,`time`) VALUES (NULL,?,?,?,?);");
-            UPDATEDNSTABLE = settings.getProperty("UpdateDNSTable", "UPDATE `dnstable` SET `ip`=?,`status`=?,`time`=? WHERE `dns` = ?;");
+            SEARCHIPTABLE = settings.getProperty("SearchIPTable", "SELECT * FROM `project`.`iptable` WHERE `ip`='%s';"); 
+            INSERTIPTABLE = settings.getProperty("InsertIPTable", "INSERT INTO `project`.`iptable` (`id`,`ip`,`update`) VALUES (NULL,?,?);");
+            UPDATEIPTABLE = settings.getProperty("UpdateIPTable", "UPDATE `project`.`iptable` SET `update`=? WHERE (`ip`=?);");
+            SEARCHDNSTABLE = settings.getProperty("SearchDNSTable", "SELECT `ip`, `status`, `time` FROM `project`.`dnstable` WHERE `dns`='%s';");
+            INSERTDNSTABLE = settings.getProperty("InsertDNSTable", "INSERT INTO `project`.`dnstable` (`no`,`ip`,`dns`,`status`,`time`) VALUES (NULL,?,?,?,?);");
+            UPDATEDNSTABLE = settings.getProperty("UpdateDNSTable", "UPDATE `project`.`dnstable` SET `ip`=?,`status`=?,`time`=? WHERE `dns`=?;");
             // HOST PROJECT
             CREATEFLOWTABLE = settings.getProperty("CreateFlowTable", "CREATE TABLE `%s`.`flow` (  `RouterIP` varchar(15) NOT NULL,  `SysUptime` bigint(20) DEFAULT NULL,  `Secs` bigint(20) DEFAULT NULL,  `Nsecs` bigint(20) DEFAULT NULL,  `Flow_Sequence` bigint(20) NOT NULL,  `Engine_Type` int(11) NOT NULL,  `Engine_ID` int(11) NOT NULL,  `SrcAddr` varchar(15) NOT NULL,  `DstAddr` varchar(15) NOT NULL,  `NextHop` varchar(15) NOT NULL,  `Input` int(11) NOT NULL,  `Output` int(11) NOT NULL,  `dPkts` bigint(20) DEFAULT NULL,  `dOctets` bigint(20) DEFAULT NULL,  `aFirst` bigint(20) DEFAULT NULL,  `aLast` bigint(20) DEFAULT NULL,  `SrcPort` int(11) NOT NULL,  `DstPort` int(11) NOT NULL,  `Tcp_Flags` int(11) NOT NULL,  `Prot` int(11) NOT NULL,  `TOS` int(11) NOT NULL,  `Src_As` int(11) NOT NULL,  `Dst_As` int(11) NOT NULL,  `Src_Mask` int(11) NOT NULL,  `Dst_Mask` int(11) NOT NULL,  `Stamp` timestamp NULL DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
             CREATESWTABLE = settings.getProperty("CreateSWTable", "CREATE TABLE `%s`.`swtable` (  `index` int(10) NOT NULL,  `name` varchar(100) NOT NULL,  `id` varchar(10) NOT NULL,  `path` text NOT NULL,  `parameters` text NOT NULL,  `type` varchar(20) NOT NULL,  `status` varchar(15) NOT NULL,  `start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',  `map` text NOT NULL,  `isboot` int(1) NOT NULL,  PRIMARY KEY (`index`,`start`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
@@ -50,6 +50,11 @@ public final class DBConfig {
             INSERTFLOWTABLE = settings.getProperty("InsertFlowTable", "INSERT INTO `%s`.`flow` ( RouterIP, SysUptime, Secs, Nsecs, Flow_Sequence, Engine_Type, Engine_ID, SrcAddr, DstAddr, NextHop, Input, Output, dPkts, dOctets, aFirst, aLast, SrcPort, DstPort, Tcp_Flags, Prot, TOS, Src_As, Dst_As, Src_Mask, Dst_Mask ,Stamp) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?);");
             INSERTSWTABLE = settings.getProperty("InsertSWTable", "INSERT INTO `%s`.`swtable` (`index`,`name`,`id`,`path`,`parameters`,`type`,`status`,`start`,`end`,`count`) VALUES (?,?,?,?,?,?,?,?,?,?);");
             INSERTTCPTABLE = settings.getProperty("InsertTCPTable", "INSERT INTO `%s`.`tcptable` (`localaddr`,`localport`,`remaddr`,`remport`,`status`,`start`,`end`,`map`) VALUES (?,?,?,?,?,?,?,?);");
+            // BLACK LIST
+            GETALLIPLIST = settings.getProperty("GetAllIPList", "SELECT `iptable`.`ip` FROM `project`.`iptable`;");
+            GETSWRUNTABLE = settings.getProperty("GetSWRunTable", "SELECT * FROM `%s`.`swtable` WHERE `isboot`=? ORDER BY `swtable`.`start` ASC, `swtable`.`index` ASC;");
+            GETBLACKLIST = settings.getProperty("GetBlackList", "SELECT * FROM `project`.`blacklist`;");
+            INSERTBLACKLIST = settings.getProperty("InsertBlackList", "INSERT INTO `project`.`blacklist` (`no`,`name`,`path`,`parameters`,`type`,`status`) VALUES (NULL,?,?,?,?,?);");
             //CREATEDB = settings.getProperty("", "");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -81,4 +86,9 @@ public final class DBConfig {
     public static String UPDATEDNSTABLE;
     
     public static String CLEARTABLE;
+    
+    public static String GETALLIPLIST;
+    public static String GETSWRUNTABLE;
+    public static String GETBLACKLIST;
+    public static String INSERTBLACKLIST;
 }

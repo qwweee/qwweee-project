@@ -90,7 +90,7 @@ public final class HTML {
             tmp.append("<td>" + tmpData.Name + "</td>\n");
             tmp.append("<td>" + tmpData.ID + "</td>\n");
             tmp.append("<td>" + tmpData.Path + "</td>\n");
-            tmp.append("<td>" + tmpData.Parameters + "</td>\n");
+            tmp.append("<td>" + tmpData.Parametes + "</td>\n");
             tmp.append("<td>" + tmpData.Type + "</td>\n");
             tmp.append("<td>" + tmpData.Status + "</td>\n");
             tmp.append("<td>" + tmpData.StartTime + "</td>\n");
@@ -131,7 +131,7 @@ public final class HTML {
     /**
      * 將傳入的html存入到apache資料夾內的html檔
      * @param data DataStruct 記錄資料
-     * @param type String 哪種型態的格式
+     * @param Type String 哪種型態的格式
      * @param ip String ip位址
      * @throws IOException 
      * @throws Exception 寫檔錯誤
