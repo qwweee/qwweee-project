@@ -77,6 +77,7 @@ public class Trapd {
                         StaticManager.IPList.put(trap.getRemoteHost(), data);
                         StaticManager.FlowList.put(trap.getRemoteHost(), data);
                         System.out.println("add "+data.ip+" to IPList!");
+                        //data.setLinkUp();
                     } else {
                         System.out.println(trap.getRemoteHost()+" already in list!");
                     }

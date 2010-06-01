@@ -5,8 +5,6 @@ package Project.mainThread.snmp;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import Project.config.Config;
 
@@ -93,23 +91,10 @@ public class SnmpGetTable {
         } catch (DataException e) {
             e.printStackTrace();
         }
+        table.setRetries(3);
         table.setPollInterval(Config.PER_BOOT_DETECT_TIME);
     }
     public void addListener() {
-        try {
-            InetAddress address = InetAddress.getByName(host);
-            while (true) {
-                if (address.isReachable(Config.PER_BOOT_DETECT_TIME)) {
-                    break;
-                }
-                Thread.sleep(1000);
-            }
-        } catch (InterruptedException e) {
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         table.addSnmpTableListener(listener);
     }
     public void rmListener() {
