@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 import Project.StaticManager;
 import Project.db.DBFunction;
 import Project.gui.BlackList;
-import Project.gui.ProcessPanel;
 
 public class IPListActionListener implements ActionListener{
     private BlackList frame;

@@ -7,7 +7,6 @@ import javax.swing.JMenuItem;
 
 import Project.StaticManager;
 import Project.gui.BlackList;
-import Project.gui.ListPanel;
 
 public class MenuActionListener implements ActionListener{
     private BlackList frame;

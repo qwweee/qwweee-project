@@ -1,5 +1,6 @@
 package Project.gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 
@@ -20,27 +21,35 @@ public class TimeMapIcon implements Icon{
     }
     @Override
     public int getIconHeight() {
-        return this.width;
-    }
-
-    @Override
-    public int getIconWidth() {
         return this.height;
     }
 
     @Override
-    public void paintIcon(Component c, Graphics g, int x, int y) {
-        int rx = 0;
-        int ry = 0;
-        processIconSize();
-        
+    public int getIconWidth() {
+        return this.width;
     }
-    private void processIconSize() {
-        int count = data.length;
-        this.piconh = this.height;
-        this.piconw = this.width / count;
+
+    @Override
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+        int ty = (c.getHeight()-height)/2;
+        int tx = 0;
+        int range = c.getWidth()/data.length;
+        tx = (c.getWidth()-range*data.length)/2;
+        for (int i = 0 ; i < data.length ; i ++) {
+            if (data[i] == 1) {
+                g.setColor(Color.red);
+            } else {
+                g.setColor(Color.black);
+            }
+            g.fillRect(tx, ty, range, height);
+            tx += range;
+        }
     }
     public void setData(byte[] data) {
         this.data = data;
+        for (int i = 0 ; i < data.length ; i ++) {
+            System.out.print(data[i]);
+        }
+        System.out.println();
     }
 }

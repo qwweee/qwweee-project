@@ -382,7 +382,7 @@ public class DBFunction {
                 set.Status = rs.getString(7);
                 set.StartTime = rs.getTimestamp(8).getTime();
                 set.EndTime = rs.getTimestamp(9).getTime();
-                set.map = rs.getBytes(10);
+                set.map = rs.getString(10).getBytes();
                 data.add(set);
             }
             SQLUtil.close(rs, pstm, con);

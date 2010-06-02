@@ -13,6 +13,7 @@ import Project.struct.BlackListStruct;
 import Project.struct.SWRunTableStruct;
 
 public class InfoPanel extends JPanel{
+    private BlackList frame;
     private GridBagLayout gridBagLayout;
     private JLabel nameLabel;
     private JLabel pathLabel;
@@ -25,7 +26,8 @@ public class InfoPanel extends JPanel{
     private JLabel typeText;
     private JLabel mapText;
     private TimeMapIcon mapIcon;
-    public InfoPanel() {
+    public InfoPanel(BlackList frame) {
+        this.frame = frame;
         init();
     }
     private void init() {
@@ -49,6 +51,7 @@ public class InfoPanel extends JPanel{
         paramentLabel.setFont(StaticManager.default_font);
         typeLabel.setFont(StaticManager.default_font);
         mapLabel.setFont(StaticManager.default_font);
+        
         nameText.setFont(StaticManager.default_font);
         pathText.setFont(StaticManager.default_font);
         paramentText.setFont(StaticManager.default_font);
@@ -76,7 +79,7 @@ public class InfoPanel extends JPanel{
         add(pathLabel, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
         add(paramentLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
         add(typeLabel, new GridBagConstraints(4, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-        add(mapLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+        add(mapLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
         
         add(nameText, new GridBagConstraints(1, 0, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
         add(pathText, new GridBagConstraints(5, 0, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
@@ -90,12 +93,19 @@ public class InfoPanel extends JPanel{
         paramentText.setText(data.Parametes);
         typeText.setText(data.Type);
         // TODO 新增時間表圖片
-        
+        mapText.setIcon(null);
+        if (mapIcon == null) {
+            mapIcon = new TimeMapIcon(mapText.getWidth(), 38, data.map);
+        } else {
+            mapIcon.setData(data.map);
+        }
+        mapText.setIcon(mapIcon);
     }
     public void setBlackData(BlackListStruct data) {
         nameText.setText(data.Name);
         pathText.setText(data.Path);
         paramentText.setText(data.Paraments);
         typeText.setText(data.Type);
+        mapText.setIcon(null);
     }
 }

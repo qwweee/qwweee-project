@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -98,6 +100,24 @@ public class ProcessPanel extends JPanel{
             }
             @Override
             public void mouseReleased(MouseEvent e) {
+            }
+        });
+        list.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {
+                JList list = (JList)e.getSource();
+                int index = list.getSelectedIndex();
+                SWRunTableStruct data = null;
+                if (index >= 0) {
+                    data = StaticManager.ProcessList.get(index);
+                    infoPane.setProcessData(data);
+                }
+            }
+            @Override
+            public void keyTyped(KeyEvent e) {
             }
         });
     }

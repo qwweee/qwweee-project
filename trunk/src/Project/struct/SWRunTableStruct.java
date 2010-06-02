@@ -77,5 +77,8 @@ public class SWRunTableStruct {
         } else {
             map = new byte[(int)(60/Config.PER_OTHER_DETECT_TIME)];
         }
+        for (int i = 0 ; i < map.length ; i ++) {
+            map[i] = -1;
+        }
     }
 }

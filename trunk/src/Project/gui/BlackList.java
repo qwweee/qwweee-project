@@ -87,7 +87,7 @@ public class BlackList extends JFrame {
         updateTitle();
     }
     private void newComponents() {
-        infoPane = new InfoPanel();
+        infoPane = new InfoPanel(this);
         processPane = new ProcessPanel(this, infoPane);
         listPane = new ListPanel(this, infoPane);
         gridBagLayout = new GridBagLayout();
