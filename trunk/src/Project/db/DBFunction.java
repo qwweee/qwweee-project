@@ -450,4 +450,13 @@ public class DBFunction {
     public boolean clearBlackList() {
         return clearTable("project", "blacklist");
     }
+    public boolean clearIPList() {
+        return clearTable("project", "iptable");
+    }
+    public boolean clearDNSTable() {
+        return clearTable("project", "dnstable");
+    }
+    public boolean dropDataBase(String dbname) {
+        return execSQL(String.format("DROP DATABASE `%s`;", dbname));
+    }
 }
