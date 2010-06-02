@@ -52,6 +52,8 @@ public class SnmpGet {
             e.printStackTrace();
             System.exit(1);
         }
+        target.setTimeout(3000);
+        target.setRetries(3);
     }
     /**
      * @param oid

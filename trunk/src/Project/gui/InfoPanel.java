@@ -24,6 +24,7 @@ public class InfoPanel extends JPanel{
     private JLabel paramentText;
     private JLabel typeText;
     private JLabel mapText;
+    private TimeMapIcon mapIcon;
     public InfoPanel() {
         init();
     }
@@ -89,6 +90,7 @@ public class InfoPanel extends JPanel{
         paramentText.setText(data.Parametes);
         typeText.setText(data.Type);
         // TODO 新增時間表圖片
+        
     }
     public void setBlackData(BlackListStruct data) {
         nameText.setText(data.Name);
