@@ -31,7 +31,7 @@ public class ListPanel extends JPanel{
         this.setLayout(new BorderLayout());
         addComponents();
         addListeners();
-        updateList(StaticManager.BLACKLIST);
+        this.updateList(StaticManager.BLACKLIST);
     }
     private void addComponents() {
         this.add(scrollPane, BorderLayout.CENTER);

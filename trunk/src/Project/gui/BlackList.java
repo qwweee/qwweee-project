@@ -134,9 +134,11 @@ public class BlackList extends JFrame {
     }
     public void updateListPane(int type) {
         listPane.updateList(type);
+        this.updateTitle();
     }
     public void updateProcessPane(String ip, int type) {
         processPane.updateList(ip, type);
+        this.updateTitle();
     }
     public void clearBlackList() {
         DBFunction.getInstance().clearBlackList();
