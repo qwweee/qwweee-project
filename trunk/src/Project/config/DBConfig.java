@@ -55,6 +55,8 @@ public final class DBConfig {
             GETSWRUNTABLE = settings.getProperty("GetSWRunTable", "SELECT * FROM `%s`.`swtable` WHERE `isboot`=? ORDER BY `swtable`.`start` ASC, `swtable`.`index` ASC;");
             GETBLACKLIST = settings.getProperty("GetBlackList", "SELECT * FROM `project`.`blacklist`;");
             INSERTBLACKLIST = settings.getProperty("InsertBlackList", "INSERT INTO `project`.`blacklist` (`no`,`name`,`path`,`parameters`,`type`,`status`) VALUES (NULL,?,?,?,?,?);");
+            UPDATEBLACKLIST = settings.getProperty("UpdateBlackList", "UPDATE `project`.`blacklist` SET `status`='%d' WHERE (`no`='%d');");
+            REMOVEBLACKLIST = settings.getProperty("RemoveBlackList", "DELETE FROM `project`.`blacklist` WHERE (`no`='%d');");
             //CREATEDB = settings.getProperty("", "");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -91,4 +93,6 @@ public final class DBConfig {
     public static String GETSWRUNTABLE;
     public static String GETBLACKLIST;
     public static String INSERTBLACKLIST;
+    public static String UPDATEBLACKLIST;
+    public static String REMOVEBLACKLIST;
 }

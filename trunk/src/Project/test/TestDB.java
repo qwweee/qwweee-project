@@ -93,14 +93,15 @@ public class TestDB {
         long size = 0;
         int add = 0;
         int gcd = 0;
+        int trange = 4000;
         try {
             con = DatabaseFactory.getInstance().getConnection();
             pstm = con.prepareStatement(query);
             rs = pstm.executeQuery();
             if (port == 6667) {
                 rs.next();
+                rs.next();
             }
-            int trange = 1;
             if (rs.next()) {
                 int data = rs.getInt(1);
                 base = rs.getTimestamp(2);

@@ -100,6 +100,8 @@ public class InfoPanel extends JPanel{
             mapIcon.setData(data.map);
         }
         mapText.setIcon(mapIcon);
+        mapText.setVisible(true);
+        mapLabel.setVisible(true);
     }
     public void setBlackData(BlackListStruct data) {
         nameText.setText(data.Name);
@@ -107,5 +109,7 @@ public class InfoPanel extends JPanel{
         paramentText.setText(data.Paraments);
         typeText.setText(data.Type);
         mapText.setIcon(null);
+        mapText.setVisible(false);
+        mapLabel.setVisible(false);
     }
 }

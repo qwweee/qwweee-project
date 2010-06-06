@@ -23,7 +23,7 @@ public class MenuActionListener implements ActionListener{
         case StaticManager.GRAYLIST: //灰名單
             frame.updateListPane(index);
             break;
-        case StaticManager.REMOVEBLACKLIST: //清除黑白名單
+        case StaticManager.REMOVEALLBLACKLIST: //清除黑白名單
             frame.clearBlackList();
             break;
         default:

@@ -80,6 +80,7 @@ public class ProcessPanel extends JPanel{
                 if (index >= 0) {
                     data = StaticManager.ProcessList.get(index);
                     infoPane.setProcessData(data);
+                    // TODO z done gui infoPanel show 資料
                 }
                 //data.print();
                 if (e.getButton() == 3) { // 滑鼠右鍵 popMenu
@@ -87,7 +88,6 @@ public class ProcessPanel extends JPanel{
                         popMenu.show(list, e.getX(), e.getY());
                     }
                 }
-                // TODO gui infoPanel show 資料
             }
             @Override
             public void mouseEntered(MouseEvent e) {

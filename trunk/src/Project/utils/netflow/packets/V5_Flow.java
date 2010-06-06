@@ -140,8 +140,6 @@ public class V5_Flow extends Flow {
     public String RouterIP = "";
 
     private long src_addr = 0, dst_addr = 0, next_hop = 0;
-    
-    public long flow_time = 0;
 
     /**
      * 建構元
@@ -151,7 +149,6 @@ public class V5_Flow extends Flow {
      * @throws DoneException
      */
     public V5_Flow(String RouterIP, byte[] buf, int off) throws DoneException {
-        flow_time = System.currentTimeMillis();
         this.RouterIP = RouterIP;
 
         srcaddr = Util.str_addr(src_addr = Util.to_number(buf, off + 0, 4));

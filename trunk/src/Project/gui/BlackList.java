@@ -78,7 +78,7 @@ public class BlackList extends JFrame {
         ipItem.setName(String.valueOf(StaticManager.IPLISTDIALOG));
         bootItem.setName(String.valueOf(StaticManager.BOOTLIST));
         notBootItem.setName(String.valueOf(StaticManager.NOTBOOTLIST));
-        removeListItem.setName(String.valueOf(StaticManager.REMOVEBLACKLIST));
+        removeListItem.setName(String.valueOf(StaticManager.REMOVEALLBLACKLIST));
         addComponents();
         addListeners();
         this.setJMenuBar(menuBar);

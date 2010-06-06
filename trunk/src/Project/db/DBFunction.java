@@ -189,7 +189,7 @@ public class DBFunction {
             pstm.setLong(23, flow.dst_as);
             pstm.setByte(24, flow.src_mask);
             pstm.setByte(25, flow.dst_mask);
-            pstm.setTimestamp(26, new Timestamp(flow.flow_time));
+            pstm.setTimestamp(26, new Timestamp(System.currentTimeMillis()));
             pstm.execute();
             SQLUtil.close(pstm, con);
         } catch (SQLException e) {
@@ -458,5 +458,13 @@ public class DBFunction {
     }
     public boolean dropDataBase(String dbname) {
         return execSQL(String.format("DROP DATABASE `%s`;", dbname));
+    }
+    public boolean updateBlackList(int type, int no) {
+        String sql = String.format(DBConfig.UPDATEBLACKLIST, type, no);
+        return execSQL(String.format(DBConfig.UPDATEBLACKLIST, type, no));
+    }
+    public boolean removeBlackList(int no) {
+        String sql = String.format(DBConfig.REMOVEBLACKLIST, no);
+        return execSQL(String.format(DBConfig.REMOVEBLACKLIST, no));
     }
 }

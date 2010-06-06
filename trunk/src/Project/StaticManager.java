@@ -31,7 +31,8 @@ public class StaticManager {
     public final static int BLACKLIST = 0;
     public final static int WHITELIST = 1;
     public final static int GRAYLIST = 2;
-    public final static int REMOVEBLACKLIST = -1;
+    public final static int REMOVEITEM = 3;
+    public final static int REMOVEALLBLACKLIST = -1;
     
     public final static int NOTBOOTLIST = 0;
     public final static int BOOTLIST = 1;
