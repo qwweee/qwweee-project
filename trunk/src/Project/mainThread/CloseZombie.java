@@ -44,11 +44,11 @@ public class CloseZombie extends Thread {
                 if (o instanceof Detection) {
                     Detection zombie = (Detection)o;
                     StaticManager.IPList.remove(zombie.getHost());
-                    StaticManager.FlowList.remove(zombie.getHost());
                     zombie.join();
                     System.out.println("Detection Thread is Join");
                 } else if (o instanceof DnsAnalysis){
                     DnsAnalysis zombie = (DnsAnalysis)o;
+                    StaticManager.FlowList.remove(zombie.ip);
                     zombie.join();
                     System.out.println("DnsAnalysis Thread is Join");
                 } else {

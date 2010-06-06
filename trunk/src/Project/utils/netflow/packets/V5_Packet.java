@@ -87,14 +87,18 @@ public class V5_Packet {
             try {
                 f = new V5_Flow(RouterIP, buf, p);
                 // TODO z done db 將flow資料存入資料庫
-                if (StaticManager.FlowList.containsKey(f.dstaddr)) {
+                if (StaticManager.IPList.containsKey(f.dstaddr)) {
                     DBFunction.getInstance().insertFlowTable(f.dstaddr, f, SysUptime, unix_secs, unix_nsecs, flow_sequence, engine_type, engine_id);
-                    StaticManager.FlowList.get(f.dstaddr).flowQueue.enQueue(f.srcaddr);
+                    if (StaticManager.FlowList.containsKey(f.dstaddr)) {
+                        StaticManager.FlowList.get(f.dstaddr).flowQueue.enQueue(f.srcaddr);
+                    }
                     //f.printAll();
                 }
-                if (StaticManager.FlowList.containsKey(f.srcaddr)) {
+                if (StaticManager.IPList.containsKey(f.srcaddr)) {
                     DBFunction.getInstance().insertFlowTable(f.srcaddr, f, SysUptime, unix_secs, unix_nsecs, flow_sequence, engine_type, engine_id);
-                    StaticManager.FlowList.get(f.srcaddr).flowQueue.enQueue(f.dstaddr);
+                    if (StaticManager.FlowList.containsKey(f.srcaddr)) {
+                        StaticManager.FlowList.get(f.srcaddr).flowQueue.enQueue(f.dstaddr);
+                    }
                     //f.printAll();
                 }
                 //f.printAll();

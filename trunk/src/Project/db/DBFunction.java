@@ -189,7 +189,7 @@ public class DBFunction {
             pstm.setLong(23, flow.dst_as);
             pstm.setByte(24, flow.src_mask);
             pstm.setByte(25, flow.dst_mask);
-            pstm.setTimestamp(26, new Timestamp(System.currentTimeMillis()));
+            pstm.setTimestamp(26, new Timestamp(flow.flow_time));
             pstm.execute();
             SQLUtil.close(pstm, con);
         } catch (SQLException e) {
