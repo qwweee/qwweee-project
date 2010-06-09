@@ -60,7 +60,7 @@ public class DnsAnalysis extends Thread {
                 case 1: //對應到相同dns資料
                     DBFunction.getInstance().updateDNSTable(ip, dns, DnsAnalysis.NORMAL);
                     break;
-                case 2: // TODO event 警告通知管理者 檢測到有對應異常
+                case 2: // TODO event 通知管理者 檢測到有對應異常
                     DBFunction.getInstance().updateDNSTable(ip, dns, DnsAnalysis.WARRING);
                     break;
                 case 3: // TODO event 通知管理者 黑名單

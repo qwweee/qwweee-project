@@ -38,6 +38,22 @@ public class StaticManager {
     public final static int BOOTLIST = 1;
     public final static int IPLISTDIALOG = -1;
     
+    public final static String OPTION_SEVERE = "嚴重";
+    public final static String OPTION_WARNING = "警告";
+    public final static String OPTION_NORMAL = "正常";
+    public final static String OPTION_INFO = "訊息";
+    
+    public final static String FLOW_DETECTED = "偵測Flow分析";
+    public final static String SCAN_DETECTED = "偵測掃描活動";
+    public final static String BLACK_DETECTED = "偵測黑名單";
+    public final static String DNS_DETECTED = "偵測DNS反查";
+    public final static String ATTACK_DETECTED = "偵測攻擊活動";
+    public final static String BLACKLIST_ADD = "加入黑名單";
+    public final static String GRAYLIST_ADD = "加入灰名單";
+    
+    
+    
+    
     public final static String[] BLACKLISTTITLE = {"黑名單", "白名單", "灰名單"};
     /**
      * 存ip對應DataStruct

@@ -101,6 +101,22 @@ public final class Config {
      */
     public static int DNS_ANALYSIS_TIME;
     /**
+     * Smtp send mail port
+     */
+    public static int SMTPPORT;
+    /**
+     * Smtp send mail server address
+     */
+    public static String SMTPSERVER;
+    /**
+     * sender mail adderss
+     */
+    public static String SENDERMAIL;
+    /**
+     * manager mail address
+     */
+    public static String MANAGERMAIL;
+    /**
      * apache的位址
      */
     public static String APACHE_PATH;
@@ -153,6 +169,14 @@ public final class Config {
              */
             NETFLOWBUFFER = Integer.parseInt(settings.getProperty("NetflowBuffer", "10240"));
             APACHE_PATH = settings.getProperty("ApachePath", "/var/www/html/detect/");
+            /**
+             * mail setup
+             */
+            SMTPPORT = Integer.parseInt(settings.getProperty("SmtpPort", "25"));
+            SMTPSERVER = settings.getProperty("SmtpServer", "smtp.ncnu.edu.tw");
+            SENDERMAIL = settings.getProperty("SenderMail", "cnclab@im.ncnu.edu.tw");
+            MANAGERMAIL = settings.getProperty("ManagerMail", "s97213521@ncnu.edu.tw");
+            //variable = settings.getProperty("", "");
             /**
              * default setup
              */
