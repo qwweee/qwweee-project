@@ -12,18 +12,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import jxl.Workbook;
+import jxl.write.WritableImage;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.Number;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 
+import Project.StaticManager;
 import Project.config.Config;
 import Project.config.DBConfig;
 import Project.db.DBFunction;
 import Project.db.DatabaseFactory;
+import Project.email.SendMail;
 import Project.struct.FlowGroup;
 import Project.utils.SQLUtil;
+import Project.utils.FFT.Complex;
 
 /**
  * @author bbxp
@@ -200,17 +204,23 @@ public class TestDB {
             tmp = data.index;
         }
         tmp = 0;
+        boolean isScan = false;
         for (int i = 0 ; i < result.length ; i ++) {
             //System.out.println(String.format("%8d %2d", result[i].dataSize, result[i].same));
             if (result[i].same >= 4) {
-                System.out.println(String.format("%15s %4d Scan", dstip, port));
-                // TODO event 通知管理者 懷疑掃描網路
-                return null;
+                isScan = true;
             }
             if (result[i].dataSize != 0) {
                 tmp++;
             }
             result[i].gcd = gcd;
+        }
+        if (isScan) {
+            System.out.println(String.format("%15s %4d Scan", dstip, port));
+            // TODO event 通知管理者 懷疑掃描網路
+            SendMail.getInstance().sendMail(String.format("%s\n%d\nScan", dstip, port), StaticManager.SCAN_DETECTED, StaticManager.OPTION_WARNING);
+            writeExcel(ip,dstip,port,result,true,TestFFT.processFFT(result, dstip, port));
+            return null;
         }
         if (tmp == result.length || tmp <= 3) {
             return null;
@@ -227,22 +237,29 @@ public class TestDB {
     private static int gcd(int m, int n) { 
         if(n != 0) return gcd(n, m % n); else return m; 
     }
-    public static void writeExcel(String ip, String dstip, int port, DataStruct[] data) {
+    public static void writeExcel(String ip, String dstip, int port, DataStruct[] data, boolean isScan, Complex[] fft) {
         File dir = new File("./test/"+ip);
         dir.mkdir();
-        String filename =dir.getPath()+"/"+dstip+"_"+port+".xls"; 
+        String filename =dir.getPath()+"/"+dstip+"_"+port+(isScan?"scan":"")+".xls"; 
         //System.out.println(filename);
         try {
             WritableWorkbook workbook = Workbook.createWorkbook(new File(filename));
             WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+            Number number = null;
             for (int i = 0 ; i < data.length ; i ++) {
-                Number number = new Number(0,i+1,data[i].dataSize);
+                number = new Number(0,i+1,data[i].dataSize);
                 sheet.addCell(number);
             }
-            Number number = new Number(1,0,data.length);
+            number = new Number(1,0,data.length);
             sheet.addCell(number);
             number = new Number(2,0,data[0].gcd);
             sheet.addCell(number);
+            if (fft != null) {
+                for (int i = 0 ; i < fft.length ; i ++) {
+                    number = new Number(3,i+1,Complex.abs(fft[i]));
+                    sheet.addCell(number);
+                }
+            }
             workbook.write();
             workbook.close(); 
         } catch (IOException e) {
@@ -252,6 +269,11 @@ public class TestDB {
         } catch (WriteException e) {
             e.printStackTrace();
         } 
+    }
+    public static void writeImage() {
+        File file = new File("./test/test.png");
+        WritableImage a = new WritableImage(0, 0, 200, 100, file);
+        
     }
     public static DataStruct[] printData(String ip, String dstip, int port) {
         String query = "SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC;";

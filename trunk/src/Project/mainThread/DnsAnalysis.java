@@ -1,7 +1,9 @@
 package Project.mainThread;
 import java.io.IOException;
 
+import Project.StaticManager;
 import Project.db.DBFunction;
+import Project.email.SendMail;
 import Project.utils.Queue;
 import Project.utils.ReverseDNS;
 
@@ -60,11 +62,13 @@ public class DnsAnalysis extends Thread {
                 case 1: //對應到相同dns資料
                     DBFunction.getInstance().updateDNSTable(ip, dns, DnsAnalysis.NORMAL);
                     break;
-                case 2: // TODO event 通知管理者 檢測到有對應異常
+                case 2: // TODO event 通知管理者 檢測到有dns對應異常
                     DBFunction.getInstance().updateDNSTable(ip, dns, DnsAnalysis.WARRING);
+                    SendMail.getInstance().sendMail(String.format("%s\n%s\n有異常對應(動態DNS)", dns, ip), StaticManager.DNS_DETECTED, StaticManager.OPTION_SEVERE);
                     break;
-                case 3: // TODO event 通知管理者 黑名單
+                case 3: // TODO event 通知管理者 dns黑名單
                     DBFunction.getInstance().updateDNSTable(ip, dns, DnsAnalysis.BLACKLIST);
+                    SendMail.getInstance().sendMail(String.format("%s\n%s\nDNS為黑名單", ip, dns), StaticManager.DNS_DETECTED, StaticManager.OPTION_SEVERE);
                     break;
                 default: //錯誤
                     throw new Exception("DnsAnalysis 錯誤!");

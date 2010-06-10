@@ -89,7 +89,7 @@ public class ListPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!list.isSelectionEmpty()) {
-                    int type = moveBlackList(list.getSelectedIndices(), StaticManager.BLACKLIST);
+                    int type = moveBlackList(list.getSelectedValues(), StaticManager.BLACKLIST);
                     frame.updateListPane(type);
                 }
             }
@@ -98,7 +98,7 @@ public class ListPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!list.isSelectionEmpty()) {
-                    int type = moveBlackList(list.getSelectedIndices(), StaticManager.WHITELIST);
+                    int type = moveBlackList(list.getSelectedValues(), StaticManager.WHITELIST);
                     frame.updateListPane(type);
                 }
             }
@@ -107,7 +107,7 @@ public class ListPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!list.isSelectionEmpty()) {
-                    int type = moveBlackList(list.getSelectedIndices(), StaticManager.REMOVEITEM);
+                    int type = moveBlackList(list.getSelectedValues(), StaticManager.REMOVEITEM);
                     frame.updateListPane(type);
                 }
             }
@@ -120,9 +120,11 @@ public class ListPanel extends JPanel{
         frame.listType = StaticManager.BLACKLISTTITLE[type];
         frame.updateTitle();
     }
-    private int moveBlackList(int[] index, int type) {
-        for (int i : index) {
-            BlackListStruct data = StaticManager.BlackList.get(i);
+    private int moveBlackList(Object[] index, int type) {
+        for (Object i : index) {
+            ListItem item = (ListItem) i;
+            BlackListStruct data = (BlackListStruct) item.getData();
+            //data.print();
             if (type == data.Status) {
                 break;
             }
@@ -136,7 +138,7 @@ public class ListPanel extends JPanel{
                 }
                 break;
             case StaticManager.REMOVEITEM:
-                // TODO db 移除blacklist資料
+                // TODO z done db 移除blacklist資料
                 type = data.Status;
                 if (!DBFunction.getInstance().removeBlackList(data.No)) {
                     System.err.println("移除BlackList錯誤!");

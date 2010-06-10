@@ -48,7 +48,7 @@ public class Detection extends Thread {
         // TODO z done 中斷dns反查
         host.setTaskStopTime();
         host.endtime = System.currentTimeMillis();
-        // TODO analysis 關機檢測後所要處理分析工作
+        // TODO analysis 關機灰名單檢測
         // TODO analysis 關機後 進行netflow分析
         // TODO z done join detection thread
         StaticManager.ZOMBIE_QUEUE.enQueue(this);

@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
 
+import Project.StaticManager;
 import Project.config.Config;
 import Project.utils.StreamUtil;
 
@@ -25,8 +26,8 @@ public class SendMail {
         Socket smtpSocket = null;
         try {
             smtpSocket = new Socket(Config.SMTPSERVER, Config.SMTPPORT);
-            br = new BufferedReader(new InputStreamReader(smtpSocket.getInputStream()));
-            bw = new BufferedWriter(new OutputStreamWriter(smtpSocket.getOutputStream()));
+            br = new BufferedReader(new InputStreamReader(smtpSocket.getInputStream(), StaticManager.MAILENCODE));
+            bw = new BufferedWriter(new OutputStreamWriter(smtpSocket.getOutputStream(), StaticManager.MAILENCODE));
             
             receiveMessage();
             sendMessage("HELO ");
@@ -37,7 +38,7 @@ public class SendMail {
             receiveMessage();
             sendMessage("DATA");
             receiveMessage();
-            sendMessage(String.format("Subject: [%s] %s ", option, type));
+            sendMessage(String.format("Subject: [%s] %s \n", option, type));
             StringTokenizer token = new StringTokenizer(message, "\n");
             while (token.hasMoreTokens())
                 sendMessage(token.nextToken());
@@ -61,6 +62,6 @@ public class SendMail {
     }
     private void receiveMessage() throws IOException {
         String msg = br.readLine();
-        System.out.println(msg);
+        //System.out.println(msg);
     }
 }
