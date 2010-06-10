@@ -31,6 +31,7 @@ public class TaskSWRunListener implements SnmpTableListener{
         for (int i=0;i<table.getRowCount();i++) {
             table.setDataType(SnmpTable.STRING_DATA);
             String key = table.getValueAt(i,0).toString();
+            // TODO detect 檢測process黑白灰名單
             if (host.sw.containsKey(key)) {
                 SWRunTableStruct sw = host.sw.get(key);
                 sw.map[mapcount] = 1;

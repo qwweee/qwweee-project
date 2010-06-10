@@ -16,4 +16,7 @@ public class BlackListStruct extends Object{
         }
         return isEquals;
     }
+    public void print() {
+        System.out.println(String.format("%3d %20s %20s\n%20s %20s %2d", No, Name, Path, Paraments, Type, Status));
+    }
 }

@@ -1,9 +1,7 @@
 package Project.test;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import javax.swing.*;
 import java.io.*;
 import java.net.*;
 

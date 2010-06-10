@@ -2,9 +2,11 @@ package Project.test;
 
 import java.sql.SQLException;
 
+import Project.StaticManager;
 import Project.config.Config;
 import Project.config.DBConfig;
 import Project.db.DatabaseFactory;
+import Project.email.SendMail;
 import Project.struct.FlowGroup;
 import Project.test.DataStruct;
 import Project.test.TestDB;
@@ -23,7 +25,7 @@ public class TestFFT {
         DBConfig.Load();
         DatabaseFactory.setDatabaseSettings(Config.DBDriver, Config.DBURL, Config.DBUser, Config.DBPassword, Config.DBMaxCon);
         DatabaseFactory.getInstance();
-	    String ip = "10.10.32.97";
+	    String ip = "10.10.32.154";
 	    int index = 20;
 	    FlowGroup[] list = TestDB.testFlow(ip);
 	    for (int i = 0 ; i < list.length ; i ++) {
@@ -32,10 +34,10 @@ public class TestFFT {
 	            //System.out.println(String.format("%15s %4d 無週期特性", list[i].ip,list[i].port));
 	            continue;
 	        }
-	        if (processFFT(data,list[i].ip,list[i].port)) {
+	        Complex[] tmp = null;
+	        if ((tmp = processFFT(data,list[i].ip,list[i].port)) != null) {
 	            System.out.println(i);
-	            TestDB.writeExcel(ip, list[i].ip, list[i].port, data);
-	            // TODO event 通知管理者 flow分析到有週期性網路訊息傳遞
+	            TestDB.writeExcel(ip, list[i].ip, list[i].port, data, false, tmp);
 	        }
 	    }
 	    /*DataStruct[] data = TestDB.getData(ip, list[index].ip, list[index].port);
@@ -84,7 +86,7 @@ public class TestFFT {
 		}
 		
 	}
-	private static boolean processFFT(DataStruct[] data, String ip, int port) {
+	public static Complex[] processFFT(DataStruct[] data, String ip, int port) {
 	    int N=data.length;
         Complex[] c = new Complex[N];
         double[] num = new double[N];
@@ -106,12 +108,14 @@ public class TestFFT {
         }
         if (isSame/(N/2.0) >= 0.8) {
             System.out.println(String.format("%15s %4d %.2f 有週期特性", ip,port,(isSame/(N/2.0))));
+            // TODO event 通知管理者 flow分析到有週期性網路訊息傳遞
+            SendMail.getInstance().sendMail(String.format("%s\n%d\n%.3f\n有週期特性", ip, port, (isSame/(N/2.0))), StaticManager.FLOW_DETECTED, StaticManager.OPTION_SEVERE);
             /*for(int i=0; i<N; i++) {
                 System.out.println( Complex.abs(x[i]) + " ... " + N*x2[i]);
             }*/
-            return true;
+            return x;
         }
-        return false;
+        return null;
 	}
 
 }

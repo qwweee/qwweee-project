@@ -13,7 +13,6 @@ import java.util.*;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import Project.config.Config;

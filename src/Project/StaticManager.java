@@ -104,6 +104,7 @@ public class StaticManager {
     public static final DefaultListModel BlackListModel = new DefaultListModel();
     public static final DefaultListModel ProcessListModel = new DefaultListModel();
     public static final ListCellRenderer CellRanderer = new ListCellRenderer();
+    public static final String MAILENCODE = "BIG5";
     public static String BlackListString(ListItem data) {
         BlackListStruct tmp = (BlackListStruct)data.getData();
         return String.format("%5d  %20s", tmp.No, tmp.Name);
