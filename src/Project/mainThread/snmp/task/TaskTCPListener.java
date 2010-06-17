@@ -56,6 +56,7 @@ public class TaskTCPListener implements SnmpTableListener{
         if (mapcount == mapsize) {
             writeDB();
             writeFile();
+            clear();
         }
         // TODO z done 開機後檢測時間結束
         if (count == Config.BOOT_DETECT_RANGE*60/Config.PER_BOOT_DETECT_TIME && isBoot){
@@ -79,7 +80,13 @@ public class TaskTCPListener implements SnmpTableListener{
         table.removeSnmpTableListener(this);
         writeDB();
         writeFile();
+        clear();
         System.gc();
+    }
+    private void clear() {
+        mapcount = 0;
+        mapsize = 0;
+        host.clearTCPHash();
     }
     private void writeFile() {
         if (host.tcp.size() == 0) {
@@ -90,9 +97,6 @@ public class TaskTCPListener implements SnmpTableListener{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mapcount = 0;
-        mapsize = 0;
-        host.clearTCPHash();
     }
  // TODO z done db 寫入db內的tcp table
     private void writeDB() {

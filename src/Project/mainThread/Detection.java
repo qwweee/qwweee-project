@@ -3,6 +3,7 @@
  */
 package Project.mainThread;
 
+
 import Project.StaticManager;
 import Project.config.Config;
 import Project.struct.DetectSet;
@@ -49,7 +50,9 @@ public class Detection extends Thread {
         host.setTaskStopTime();
         host.endtime = System.currentTimeMillis();
         // TODO analysis 關機灰名單檢測
+        
         // TODO analysis 關機後 進行netflow分析
+        
         // TODO z done join detection thread
         StaticManager.ZOMBIE_QUEUE.enQueue(this);
     }

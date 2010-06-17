@@ -98,7 +98,15 @@ public class StaticManager {
                 }
             }
             return false;
-    }
+        }
+        public int indexOf(Object o) {
+            for (int i = 0 ; i < this.toArray().length ; i ++) {
+                if (this.toArray()[i].equals(o)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
     };
     public static final ArrayList<SWRunTableStruct> ProcessList = new ArrayList<SWRunTableStruct>();
     public static final DefaultListModel BlackListModel = new DefaultListModel();
@@ -121,12 +129,15 @@ public class StaticManager {
         }
         return StaticManager.getListModel(StaticManager.ProcessListModel, StaticManager.ProcessList, -1);
     }
-    public static ListModel readBlackList(int type) {
+    public static void updateBlackList() {
         BlackListStruct[] data = DBFunction.getInstance().GetBlackList();
         StaticManager.BlackList.clear();
         for (int i = 0 ; i < data.length ; i ++) {
             StaticManager.BlackList.add(data[i]);
         }
+    }
+    public static ListModel readBlackList(int type) {
+        updateBlackList();
         return getListModel(StaticManager.BlackListModel, StaticManager.BlackList, type);
     }
     private static ListModel getListModel(DefaultListModel model, ArrayList<?> list,int type) {
