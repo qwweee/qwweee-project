@@ -14,6 +14,11 @@ public class BlackListStruct extends Object{
             isEquals = data.Name.equalsIgnoreCase(Name) && data.Path.equalsIgnoreCase(Path) && 
             data.Parametes.equalsIgnoreCase(Paraments) && data.Type.equalsIgnoreCase(Type);
         }
+        if (o instanceof BlackListStruct) {
+            BlackListStruct data = (BlackListStruct) o;
+            isEquals = data.Name.equalsIgnoreCase(Name) && data.Path.equalsIgnoreCase(Path) &&
+            data.Paraments.equalsIgnoreCase(Paraments) && data.Type.equalsIgnoreCase(Type);
+        }
         return isEquals;
     }
     public void print() {

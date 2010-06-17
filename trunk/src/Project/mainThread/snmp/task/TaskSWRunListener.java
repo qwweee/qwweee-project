@@ -31,7 +31,6 @@ public class TaskSWRunListener implements SnmpTableListener{
         for (int i=0;i<table.getRowCount();i++) {
             table.setDataType(SnmpTable.STRING_DATA);
             String key = table.getValueAt(i,0).toString();
-            // TODO detect 檢測process黑白灰名單
             if (host.sw.containsKey(key)) {
                 SWRunTableStruct sw = host.sw.get(key);
                 sw.map[mapcount] = 1;
@@ -58,6 +57,9 @@ public class TaskSWRunListener implements SnmpTableListener{
         if (mapcount == mapsize) {
             writeDB();
             writeFile();
+            // TODO detect 檢測process黑白灰名單
+            host.checkGrayList();
+            clear();
         }
         // TODO z done 開機後檢測時間結束
         if (count == Config.BOOT_DETECT_RANGE*60/Config.PER_BOOT_DETECT_TIME && isBoot){
@@ -80,7 +82,15 @@ public class TaskSWRunListener implements SnmpTableListener{
         table.removeSnmpTableListener(this);
         writeDB();
         writeFile();
+        // TODO detect 檢測process黑白灰名單
+        host.checkGrayList();
+        clear();
         System.gc();
+    }
+    private void clear() {
+        mapsize = 0;
+        mapcount = 0;
+        host.clearSWHash();
     }
     private void writeFile() {
         if (host.sw.size() == 0) {
@@ -91,9 +101,6 @@ public class TaskSWRunListener implements SnmpTableListener{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mapsize = 0;
-        mapcount = 0;
-        host.clearSWHash();
     }
     // TODO z done db 寫入db內的swrun table
     private void writeDB() {

@@ -127,8 +127,8 @@ public class ProcessPanel extends JPanel{
             SWRunTableStruct data = StaticManager.ProcessList.get(i);
             boolean inList = StaticManager.BlackList.equals(data);
             if (!inList) {
-                // db 加入黑名單 檢查 黑名單有無重複
-                // db 加入白名單 檢查 白名單有無重複
+                // TODO z done db 加入黑名單 檢查 黑名單有無重複
+                // TODO z done db 加入白名單 檢查 白名單有無重複
                 if (!DBFunction.getInstance().insertBlackList(data, type)) {
                     StaticManager.showWarningMsg(frame, "新增"+StaticManager.BLACKLISTTITLE[type]+"錯誤！", 
                             "新增"+StaticManager.BLACKLISTTITLE[type]);

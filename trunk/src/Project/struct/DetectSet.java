@@ -1,5 +1,6 @@
 package Project.struct;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import Project.StaticManager;
@@ -102,6 +103,7 @@ public class DetectSet {
     public TaskSnmpGet tasksnmpget;
     private TaskSWRunListener swlistener;
     private TaskTCPListener tcplistener;
+    private ArrayList<BlackListStruct> comparerList;
     /**
      * @param ip
      */
@@ -125,6 +127,24 @@ public class DetectSet {
         this.tcplistener = new TaskTCPListener(this);
         this.tcpsnmptable = new SnmpGetTable(ip, community, Config.TCPCONNECT, tcplistener);
         this.swsnmptable = new SnmpGetTable(ip, community, Config.SWRUNTABLE, swlistener);
+        this.comparerList = new ArrayList<BlackListStruct>() {
+            public boolean equals(Object o) {
+                for (Object data : this.toArray()) {
+                    if (data.equals(o)){
+                        return true;
+                    }
+                }
+                return false;
+            }
+            public int indexOf(Object o) {
+                for (int i = 0 ; i < this.toArray().length ; i ++) {
+                    if (this.toArray()[i].equals(o)) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+        };
         this.starttime = System.currentTimeMillis();
         // TODO z done db 檢查ip table並建立建立DB，失敗System.exit(1)
         if (!DBFunction.getInstance().initAllTable(ip)) {
@@ -183,5 +203,39 @@ public class DetectSet {
     }
     public void setShutdown() {
         this.isShutdown = true;
+    }
+    public void checkGrayList() {
+        StaticManager.updateBlackList();
+        for (SWRunTableStruct data : sw.values()) {
+            if (StaticManager.BlackList.equals(data)) { // 黑白灰名單內有資料
+                BlackListStruct tmp = StaticManager.BlackList.get(StaticManager.BlackList.indexOf(data));
+                if (comparerList.equals(tmp)) { // 已經有在比對名單內
+                    BlackListStruct comparer = comparerList.get(comparerList.indexOf(tmp));
+                    switch (tmp.Status) {
+                    case StaticManager.BLACKLIST:
+                    case StaticManager.WHITELIST:
+                        break;
+                    case StaticManager.GRAYLIST:
+                        GrayListStruct gray = (GrayListStruct) comparer;
+                        gray.endTime = System.currentTimeMillis();
+                        break;
+                    default:
+                        System.err.println("黑名單格式錯誤!");
+                    }
+                } else {
+                    switch (tmp.Status) {
+                    case StaticManager.BLACKLIST:
+                    case StaticManager.WHITELIST:
+                        comparerList.add(tmp);
+                        break;
+                    case StaticManager.GRAYLIST:
+                        comparerList.add(new GrayListStruct(tmp));
+                        break;
+                    default:
+                        System.err.println("黑名單格式錯誤!");
+                    }
+                }
+            }
+        }
     }
 }

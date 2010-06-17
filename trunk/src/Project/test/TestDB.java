@@ -106,10 +106,10 @@ public class TestDB {
         return result;
     }
     public static DataStruct[] getData(String ip, String dstip, int port) {
-        String query = "SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC;";
+        String sql = "SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC;";
         //query = "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= 2;";
-        query = "SELECT `flow`.`dOctets`, `flow`.`Stamp`, `flow`.`aFirst`, `flow`.`dPkts` FROM `%s`.`flow` WHERE flow.DstPort = '%d' AND flow.DstAddr = '%s' ORDER BY flow.aFirst ASC"; 
-        query = String.format(query, ip, port, dstip);
+        sql = "SELECT `flow`.`dOctets`, `flow`.`Stamp`, `flow`.`aFirst`, `flow`.`dPkts` FROM `%s`.`flow` WHERE flow.DstPort = '%d' AND flow.DstAddr = '%s' ORDER BY flow.aFirst ASC"; 
+        sql = String.format(sql, ip, port, dstip);
         //System.out.println(query);
         DatabaseFactory.setDatabaseSettings
         ("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/project?useUnicode=true&characterEncoding=utf8",
@@ -127,7 +127,7 @@ public class TestDB {
         long size = 0, base = 0, perbase = 0;
         try {
             con = DatabaseFactory.getInstance().getConnection();
-            pstm = con.prepareStatement(query);
+            pstm = con.prepareStatement(sql);
             rs = pstm.executeQuery();
             while (rs.next()) {
                 int pkts = rs.getInt(4);
