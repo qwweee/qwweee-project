@@ -13,6 +13,7 @@ import Project.struct.DetectSet;
 import Project.struct.SWRunTableStruct;
 import Project.struct.TCPConnectStruct;
 import Project.utils.StreamUtil;
+import Project.utils.TimeUtil;
 
 /**
  * @author 怪叔叔
@@ -53,7 +54,7 @@ public final class HTML {
             tmp.append("<td>" + tmpData.LocalPort + "</td>\n");
             tmp.append("<td>" + tmpData.RemoteAddress + "</td>\n");
             tmp.append("<td>" + tmpData.RemotePort + "</td>\n");
-            tmp.append("<td>" + tmpData.StartTime + "</td>\n");
+            tmp.append("<td>" + TimeUtil.timeToString(tmpData.StartTime) + "</td>\n");
             tmp.append("<td>" + byte2String(tmpData.map) + "</td>\n");
             tmp.append("</tr>\n");
         }
@@ -93,7 +94,7 @@ public final class HTML {
             tmp.append("<td>" + tmpData.Parametes + "</td>\n");
             tmp.append("<td>" + tmpData.Type + "</td>\n");
             tmp.append("<td>" + tmpData.Status + "</td>\n");
-            tmp.append("<td>" + tmpData.StartTime + "</td>\n");
+            tmp.append("<td>" + TimeUtil.timeToString(tmpData.StartTime) + "</td>\n");
             tmp.append("<td>" + byte2String(tmpData.map) + "</td>\n");
             tmp.append("</tr>\n");
         }
