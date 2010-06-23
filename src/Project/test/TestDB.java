@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import jxl.Workbook;
@@ -72,6 +73,41 @@ public class TestDB {
         }
         DBFunction.getInstance().clearDNSTable();
         DBFunction.getInstance().clearIPList();
+    }
+    public static FlowGroup[] testFlow(String ip, long start, long end) {
+        Connection con = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        ArrayList<FlowGroup> data = new ArrayList<FlowGroup>();
+        String sql = "SELECT * FROM (SELECT flow.DstAddr, flow.DstPort, Count(flow.DstPort) as `count`, Sum(flow.dOctets) as `sum` FROM flow WHERE flow.SrcAddr =  '%s' AND flow.SrcPort <>  '161' AND flow.DstPort <>  '162'  GROUP BY flow.DstAddr, flow.DstPort) as `result` WHERE  `result`.`count` >= '2';";
+        // `flow`.`Stamp` >= ? AND `flow`.`Stamp` <= ?
+        sql = "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' AND `flow`.`SrcPort` <> '161' AND `flow`.`DstPort` <> '162' `flow`.`Stamp` >= ? AND `flow`.`Stamp` <= ? GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= 8;";
+        sql = String.format(sql, ip, ip);
+        //System.out.println(sql);
+        try {
+            con = DatabaseFactory.getInstance().getConnection();
+            pstm = con.prepareStatement(sql);
+            pstm.setTimestamp(1, new Timestamp(start));
+            pstm.setTimestamp(2, new Timestamp(end));
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                FlowGroup set = new FlowGroup();
+                set.ip = rs.getString("DstAddr");
+                set.port = rs.getInt("DstPort");
+                set.count = rs.getInt("count");
+                data.add(set);
+                //set.printAll();
+            }
+            SQLUtil.close(rs, pstm, con);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            SQLUtil.close(rs, pstm, con);
+        }
+        //System.out.println(data.size());
+        FlowGroup[] result = new FlowGroup[data.size()];
+        result = data.toArray(result);
+        return result;
     }
     public static FlowGroup[] testFlow(String ip) {
         Connection con = null;
