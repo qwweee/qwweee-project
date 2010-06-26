@@ -39,7 +39,7 @@ public class FftLab extends java.applet.Applet {
         }
         controller = new FftLabController();
         combox = new JComboBox();        
-        list = TestDB.testFlow(ip);
+        list = TestDB.getFlowGroups(ip);
         for (int i = 0 ; i < list.length ; i ++) {
             combox.addItem(String.format("%4d %15s_%5d", i, list[i].ip, list[i].port));
         }
@@ -48,7 +48,7 @@ public class FftLab extends java.applet.Applet {
             public void actionPerformed(ActionEvent e) {
                 JComboBox cb = (JComboBox)e.getSource();
                 int index = cb.getSelectedIndex();
-                setData(TestDB.getData(ip, list[index].ip, list[index].port));
+                setData(TestDB.getFlowsData(ip, list[index].ip, list[index].port));
             }
         });
         setLayout(new BorderLayout());

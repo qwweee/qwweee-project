@@ -467,4 +467,12 @@ public class DBFunction {
         String sql = String.format(DBConfig.REMOVEBLACKLIST, no);
         return execSQL(String.format(DBConfig.REMOVEBLACKLIST, no));
     }
+    public void dropALLTable() {
+        String[] ipList = DBFunction.getInstance().GetAllIPList();
+        for (int i = 0 ; i < ipList.length ; i ++) {
+            DBFunction.getInstance().dropDataBase(ipList[i]);
+        }
+        DBFunction.getInstance().clearDNSTable();
+        DBFunction.getInstance().clearIPList();
+    }
 }

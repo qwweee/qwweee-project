@@ -27,6 +27,7 @@ import Project.db.DBFunction;
 import Project.db.DatabaseFactory;
 import Project.email.SendMail;
 import Project.struct.FlowGroup;
+import Project.utils.ProcessFFT;
 import Project.utils.SQLUtil;
 import Project.utils.FFT.Complex;
 
@@ -48,9 +49,9 @@ public class TestDB {
         String ip = "10.10.64.134";
         
         //dropALLTable();
-        FlowGroup[] list = testFlow(ip);
+        FlowGroup[] list = getFlowGroups(ip);
         for (int i = 0 ; i < list.length ; i ++) {
-            getData(ip, list[i].ip, list[i].port);
+            getFlowsData(ip, list[i].ip, list[i].port);
         }
         //getData("10.10.32.154","163.22.32.101" , 6667);
         //getData("10.10.32.154","10.10.32.33" , 445);
@@ -62,19 +63,11 @@ public class TestDB {
         int[] data = {96000,192000,288000,384000,480000,576000,672000,768000};
         int gcd = data[0];
         for (int i = 1 ; i < data.length ; i ++) {
-            gcd = gcd(gcd, data[i]);
+            gcd = ProcessFFT.gcd(gcd, data[i]);
         }
         System.out.println(gcd);
     }
-    private static void dropALLTable() {
-        String[] ipList = DBFunction.getInstance().GetAllIPList();
-        for (int i = 0 ; i < ipList.length ; i ++) {
-            DBFunction.getInstance().dropDataBase(ipList[i]);
-        }
-        DBFunction.getInstance().clearDNSTable();
-        DBFunction.getInstance().clearIPList();
-    }
-    public static FlowGroup[] testFlow(String ip, long start, long end) {
+    public static FlowGroup[] getFlowGroups(String ip, long start, long end) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -109,7 +102,7 @@ public class TestDB {
         result = data.toArray(result);
         return result;
     }
-    public static FlowGroup[] testFlow(String ip) {
+    public static FlowGroup[] getFlowGroups(String ip) {
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -141,7 +134,7 @@ public class TestDB {
         result = data.toArray(result);
         return result;
     }
-    public static DataStruct[] getData(String ip, String dstip, int port) {
+    public static DataStruct[] getFlowsData(String ip, String dstip, int port) {
         String sql = "SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC;";
         //query = "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= 2;";
         sql = "SELECT `flow`.`dOctets`, `flow`.`Stamp`, `flow`.`aFirst`, `flow`.`dPkts` FROM `%s`.`flow` WHERE flow.DstPort = '%d' AND flow.DstAddr = '%s' ORDER BY flow.aFirst ASC"; 
@@ -177,7 +170,7 @@ public class TestDB {
                     perbase = aFirst;
                 }
                 size = (long)((aFirst - perbase) / 1000.0 +0.5);
-                gcd = gcd(gcd,(int)size);
+                gcd = ProcessFFT.gcd(gcd,(int)size);
                 DataStruct set = new DataStruct();
                 set.dataSize = data;
                 set.index = (int) ((aFirst - base)/ 1000.0 +0.5);
@@ -253,9 +246,9 @@ public class TestDB {
         }
         if (isScan) {
             System.out.println(String.format("%15s %4d Scan", dstip, port));
-            // TODO event 通知管理者 懷疑掃描網路
+            // TODO event 通知管理者 懷疑掃描網路或攻擊
             SendMail.getInstance().sendMail(String.format("%s\n%d\nScan", dstip, port), StaticManager.SCAN_DETECTED, StaticManager.OPTION_WARNING);
-            writeExcel(ip,dstip,port,result,true,TestFFT.processFFT(result, dstip, port));
+            writeExcel(ip,dstip,port,result,true,ProcessFFT.processFFT(result, dstip, port));
             return null;
         }
         if (tmp == result.length || tmp <= 3) {
@@ -269,9 +262,6 @@ public class TestDB {
         //System.out.println(String.format("%15s %4d", dstip, port));
         //System.out.println(String.format("gcd %5d count %5d end %5d", gcd, count, size));
         return result;
-    }
-    private static int gcd(int m, int n) { 
-        if(n != 0) return gcd(n, m % n); else return m; 
     }
     public static void writeExcel(String ip, String dstip, int port, DataStruct[] data, boolean isScan, Complex[] fft) {
         File dir = new File("./test/"+ip);
@@ -309,9 +299,8 @@ public class TestDB {
     public static void writeImage() {
         File file = new File("./test/test.png");
         WritableImage a = new WritableImage(0, 0, 200, 100, file);
-        
     }
-    public static DataStruct[] printData(String ip, String dstip, int port) {
+    public static DataStruct[] printFlowsData(String ip, String dstip, int port) {
         String query = "SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC;";
         //query = "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= 2;";
         query = "SELECT `flow`.`dOctets`, `flow`.`Stamp`, `flow`.`aFirst`, `flow`.`dPkts` FROM `%s`.`flow` WHERE flow.DstPort = '%d' AND flow.DstAddr = '%s' ORDER BY flow.aFirst ASC"; 
@@ -347,7 +336,7 @@ public class TestDB {
                     perbase = aFirst;
                 }
                 size = (long)((aFirst - perbase) / 1000.0 +0.5);
-                gcd = gcd(gcd,(int)size);
+                gcd = ProcessFFT.gcd(gcd,(int)size);
                 DataStruct set = new DataStruct();
                 set.dataSize = data;
                 set.index = (int) ((aFirst - base)/ 1000.0 +0.5);
