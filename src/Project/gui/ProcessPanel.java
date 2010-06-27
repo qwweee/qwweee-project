@@ -136,7 +136,7 @@ public class ProcessPanel extends JPanel{
                     BlackListStruct add = new BlackListStruct();
                     add.Name = data.Name;
                     add.Path = data.Path;
-                    add.Paraments = data.Parametes;
+                    add.Parametes = data.Parametes;
                     add.Type = data.Type;
                     add.Status = type;
                     StaticManager.BlackList.add(add);

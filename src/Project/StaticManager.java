@@ -45,11 +45,12 @@ public class StaticManager {
     
     public final static String FLOW_DETECTED = "偵測Flow分析";
     public final static String SCAN_DETECTED = "偵測掃描活動";
-    public final static String BLACK_DETECTED = "偵測黑名單";
+    public final static String BLACK_DETECTED = "偵測處理程序黑名單";
     public final static String DNS_DETECTED = "偵測DNS反查";
     public final static String ATTACK_DETECTED = "偵測攻擊活動";
     public final static String BLACKLIST_ADD = "加入黑名單";
     public final static String GRAYLIST_ADD = "加入灰名單";
+    public final static String WHITELIST_ADD = "加入白名單";
     
     
     
@@ -58,13 +59,13 @@ public class StaticManager {
     /**
      * 存ip對應DataStruct
      * 
-     * @see Project.Structure.DataStruct
+     * @see Project.struct.Structure.DataStruct
      */
     public static HashMap<String, DetectSet> IPList = new HashMap<String, DetectSet>();
     /**
      * 存ip對應DataStruct
      * 
-     * @see Project.Structure.DataStruct
+     * @see Project.struct.Structure.DataStruct
      */
     public static HashMap<String, DetectSet> FlowList = new HashMap<String, DetectSet>();
     /**

@@ -1,82 +1,62 @@
 package Project.test;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import org.jfree.chart.*;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.*;
 import org.jfree.ui.*;
+
+import Project.config.Config;
+import Project.struct.DataStruct;
+import Project.utils.FFT.Complex;
 
 // Referenced classes of package demo:
 //            DemoPanel
 
 public class XYSpinLine extends ApplicationFrame {
-    static class MyDemoPanel extends DemoPanel {
+    public class MyDemoPanel extends DemoPanel {
 
-        private XYDataset createSampleData() {
-            XYSeries xyseries = new XYSeries("Series 1");
-            xyseries.add(2D, 56.270000000000003D);
-            xyseries.add(3D, 41.32D);
-            xyseries.add(4D, 31.449999999999999D);
-            xyseries.add(5D, 30.050000000000001D);
-            xyseries.add(6D, 24.690000000000001D);
-            xyseries.add(7D, 19.780000000000001D);
-            xyseries.add(8D, 20.940000000000001D);
-            xyseries.add(9D, 16.73D);
-            xyseries.add(10D, 14.210000000000001D);
-            xyseries.add(11D, 12.44D);
-            XYSeriesCollection xyseriescollection = new XYSeriesCollection(
-                    xyseries);
-            XYSeries xyseries1 = new XYSeries("Series 2");
-            xyseries1.add(11D, 56.270000000000003D);
-            xyseries1.add(10D, 41.32D);
-            xyseries1.add(9D, 31.449999999999999D);
-            xyseries1.add(8D, 30.050000000000001D);
-            xyseries1.add(7D, 24.690000000000001D);
-            xyseries1.add(6D, 19.780000000000001D);
-            xyseries1.add(5D, 20.940000000000001D);
-            xyseries1.add(4D, 16.73D);
-            xyseries1.add(3D, 14.210000000000001D);
-            xyseries1.add(2D, 12.44D);
-            xyseriescollection.addSeries(xyseries1);
+        private XYDataset createSampleData(String lineName, DataStruct[] data) {
+            XYSeriesCollection xyseriescollection = new XYSeriesCollection();
+            XYSeries xyseries = new XYSeries(lineName);
+            for (int i = 0 ; i < data.length ; i ++) {
+                xyseries.add(i, data[i].dataSize);
+            }
+            xyseriescollection.addSeries(xyseries);
+            return xyseriescollection;
+        }
+        private XYDataset createSampleData(String lineName, Complex[] fft) {
+            XYSeriesCollection xyseriescollection = new XYSeriesCollection();
+            XYSeries xyseries = new XYSeries(lineName);
+            if (fft != null) {
+                for (int i = 0 ; i < fft.length ; i ++) {
+                    xyseries.add(i, Complex.abs(fft[i]));
+                }
+            }
+            xyseriescollection.addSeries(xyseries);
             return xyseriescollection;
         }
 
-        private JTabbedPane createContent() {
+        private JTabbedPane createContent(String xTitle) {
             JTabbedPane jtabbedpane = new JTabbedPane();
-            jtabbedpane.add("Splines:", createChartPanel1());
-            jtabbedpane.add("Lines:", createChartPanel2());
+            chartPanel1 = createChartPanel1("Source Data",xTitle ,"Octets");
+            jtabbedpane.add("Source Data", chartPanel1);
+            chartPanel2 = createChartPanel2("FFT Spectrum",xTitle,"HZ");
+            jtabbedpane.add("FFT Spectrum", chartPanel2);
             return jtabbedpane;
         }
 
-        private ChartPanel createChartPanel1() {
-            NumberAxis numberaxis = new NumberAxis("X");
+        private ChartPanel createChartPanel1(String title, String xTitle, String yTitle) {
+            NumberAxis numberaxis = new NumberAxis(xTitle);
             numberaxis.setAutoRangeIncludesZero(false);
-            NumberAxis numberaxis1 = new NumberAxis("Y");
-            numberaxis1.setAutoRangeIncludesZero(false);
-            XYSplineRenderer xysplinerenderer = new XYSplineRenderer();
-            XYPlot xyplot = new XYPlot(data1, numberaxis, numberaxis1,
-                    xysplinerenderer);
-            xyplot.setBackgroundPaint(Color.lightGray);
-            xyplot.setDomainGridlinePaint(Color.white);
-            xyplot.setRangeGridlinePaint(Color.white);
-            xyplot.setAxisOffset(new RectangleInsets(4D, 4D, 4D, 4D));
-            JFreeChart jfreechart = new JFreeChart("XYSplineRenderer",
-                    JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
-            addChart(jfreechart);
-            ChartUtilities.applyCurrentTheme(jfreechart);
-            ChartPanel chartpanel = new ChartPanel(jfreechart);
-            return chartpanel;
-        }
-
-        private ChartPanel createChartPanel2() {
-            NumberAxis numberaxis = new NumberAxis("X");
-            numberaxis.setAutoRangeIncludesZero(false);
-            NumberAxis numberaxis1 = new NumberAxis("Y");
+            NumberAxis numberaxis1 = new NumberAxis(yTitle);
             numberaxis1.setAutoRangeIncludesZero(false);
             XYLineAndShapeRenderer xylineandshaperenderer = new XYLineAndShapeRenderer();
             XYPlot xyplot = new XYPlot(data1, numberaxis, numberaxis1,
@@ -85,20 +65,58 @@ public class XYSpinLine extends ApplicationFrame {
             xyplot.setDomainGridlinePaint(Color.white);
             xyplot.setRangeGridlinePaint(Color.white);
             xyplot.setAxisOffset(new RectangleInsets(4D, 4D, 4D, 4D));
-            JFreeChart jfreechart = new JFreeChart("XYLineAndShapeRenderer",
+            chart1 = new JFreeChart(title,
                     JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
-            addChart(jfreechart);
-            ChartUtilities.applyCurrentTheme(jfreechart);
-            ChartPanel chartpanel = new ChartPanel(jfreechart);
+            addChart(chart1);
+            ChartUtilities.applyCurrentTheme(chart1);
+            ChartPanel chartpanel = new ChartPanel(chart1);
             return chartpanel;
         }
 
+        private ChartPanel createChartPanel2(String title, String xTitle, String yTitle) {
+            NumberAxis numberaxis = new NumberAxis(xTitle);
+            numberaxis.setAutoRangeIncludesZero(true);
+            NumberAxis numberaxis1 = new NumberAxis(yTitle);
+            numberaxis1.setAutoRangeIncludesZero(true);
+            XYLineAndShapeRenderer xylineandshaperenderer = new XYLineAndShapeRenderer();
+            XYPlot xyplot = new XYPlot(data2, numberaxis, numberaxis1,
+                    xylineandshaperenderer);
+            xyplot.setBackgroundPaint(Color.lightGray);
+            xyplot.setDomainGridlinePaint(Color.white);
+            xyplot.setRangeGridlinePaint(Color.white);
+            xyplot.setAxisOffset(new RectangleInsets(4D, 4D, 4D, 4D));
+            chart2 = new JFreeChart(title,
+                    JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
+            addChart(chart2);
+            ChartUtilities.applyCurrentTheme(chart2);
+            ChartPanel chartpanel = new ChartPanel(chart2);
+            return chartpanel;
+        }
+        
+        public void savePNG(String filepath) {
+            try {
+                ChartUtilities.saveChartAsPNG(new File(filepath+"_S.png"), chart1 ,Config.IMAGEWIDTH, Config.IMAGEHEIGHT);
+                ChartUtilities.saveChartAsPNG(new File(filepath+"_F.png"), chart2 ,Config.IMAGEWIDTH, Config.IMAGEHEIGHT);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        public ChartPanel chartPanel1;
+        public ChartPanel chartPanel2;
+        public JFreeChart chart1;
+        public JFreeChart chart2;
+
         private XYDataset data1;
+        private XYDataset data2;
 
         public MyDemoPanel() {
             super(new BorderLayout());
-            data1 = createSampleData();
-            add(createContent());
+        }
+        public void initPanel(String filepath, DataStruct[] data, Complex[] fft) {
+            data1 = createSampleData("Source Data", data);
+            data2 = createSampleData("FFT Spectrum", fft);
+            add(createContent(String.format("Time(%ds)", data[0].gcd)));
         }
     }
 
@@ -107,16 +125,10 @@ public class XYSpinLine extends ApplicationFrame {
         JPanel jpanel = createDemoPanel();
         getContentPane().add(jpanel);
     }
+    
+    public MyDemoPanel demo;
 
-    public static JPanel createDemoPanel() {
-        return new MyDemoPanel();
-    }
-
-    public static void main(String args[]) {
-        XYSpinLine xysplinerendererdemo1 = new XYSpinLine(
-                "JFreeChart: XYSplineRendererDemo1.java");
-        xysplinerendererdemo1.pack();
-        RefineryUtilities.centerFrameOnScreen(xysplinerendererdemo1);
-        xysplinerendererdemo1.setVisible(true);
+    public JPanel createDemoPanel() {
+        return (demo = new MyDemoPanel());
     }
 }

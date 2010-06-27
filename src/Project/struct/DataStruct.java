@@ -1,4 +1,4 @@
-package Project.test;
+package Project.struct;
 
 public class DataStruct {
     public int index;

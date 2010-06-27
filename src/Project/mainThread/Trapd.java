@@ -28,7 +28,7 @@ public class Trapd {
     /**
      * 存ip對應DataStruct
      * 
-     * @see Project.Structure.DataStruct
+     * @see Project.struct.Structure.DataStruct
      */
     private static Trapd instance;
     public static Trapd getInstance() {
@@ -62,7 +62,7 @@ public class Trapd {
      * 初始化 將trap為coldstart的記錄 starttim, ip, port<p>
      * 並執行Thread跑config檔內的設定時間
      *
-     * @see Project.Structure.DataStruct
+     * @see Project.struct.Structure.DataStruct
      */
     private void init(){
         receiver = new SnmpTrapReceiver();

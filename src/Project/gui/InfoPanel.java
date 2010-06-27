@@ -106,7 +106,7 @@ public class InfoPanel extends JPanel{
     public void setBlackData(BlackListStruct data) {
         nameText.setText(data.Name);
         pathText.setText(data.Path);
-        paramentText.setText(data.Paraments);
+        paramentText.setText(data.Parametes);
         typeText.setText(data.Type);
         mapText.setIcon(null);
         mapText.setVisible(false);

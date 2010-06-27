@@ -23,7 +23,8 @@ public class SendMail {
     private SendMail() {
     }
     public void sendMail(String message, String type, String option) {
-        Socket smtpSocket = null;
+        return ;
+        /*Socket smtpSocket = null;
         try {
             smtpSocket = new Socket(Config.SMTPSERVER, Config.SMTPPORT);
             br = new BufferedReader(new InputStreamReader(smtpSocket.getInputStream(), StaticManager.MAILENCODE));
@@ -53,7 +54,7 @@ public class SendMail {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        StreamUtil.close(br, bw);
+        StreamUtil.close(br, bw);*/
     }
     private void sendMessage(String msg) throws IOException {
         bw.write(msg);

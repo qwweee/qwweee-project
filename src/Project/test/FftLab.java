@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import Project.config.Config;
 import Project.config.DBConfig;
 import Project.db.DatabaseFactory;
+import Project.struct.DataStruct;
 import Project.struct.FlowGroup;
 
 public class FftLab extends java.applet.Applet {

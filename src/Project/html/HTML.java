@@ -85,7 +85,7 @@ public final class HTML {
         }
         tmp.append("</tr>\n");
         for (int i = 0 ; i < data.size() ; i ++) {
-            tmp.append("<tr  bgColor='lightyellow'><td bgColor='lightgreen'>\n");
+            tmp.append("<tr  bgColor='lightyellow'>\n");
             SWRunTableStruct tmpData = data.get(i);
             tmp.append("<td>" + tmpData.Index + "</td>\n");
             tmp.append("<td>" + tmpData.Name + "</td>\n");
@@ -109,7 +109,7 @@ public final class HTML {
      * @param ip String ip位址
      * @throws IOException 
      * @throws Exception 寫檔錯誤
-     * @see Project.Structure.DataStruct
+     * @see Project.struct.Structure.DataStruct
      */
     public static void ToFileTCP(DetectSet host, String ip, boolean isBoot) throws IOException{
         ArrayList<TCPConnectStruct> tmp = new ArrayList<TCPConnectStruct>();
@@ -136,7 +136,7 @@ public final class HTML {
      * @param ip String ip位址
      * @throws IOException 
      * @throws Exception 寫檔錯誤
-     * @see Project.Structure.DataStruct
+     * @see Project.struct.Structure.DataStruct
      */
     public static void ToFileSW(DetectSet host, String ip, boolean isBoot) throws IOException {
         ArrayList<SWRunTableStruct> tmp = new ArrayList<SWRunTableStruct>();
@@ -161,7 +161,7 @@ public final class HTML {
     }
     private static String byte2String(byte[] map) {
         StringBuffer tmp = new StringBuffer();
-        tmp.append("<table align='center' border='5'><tr bgColor='darkblue'>\n");
+        tmp.append("<table align='center' border='5'>\n");
         tmp.append("<tr  bgColor='lightyellow'>\n");
         for (int i = 0 ; i < map.length ; i ++) {
             if (map[i] != 0) {
