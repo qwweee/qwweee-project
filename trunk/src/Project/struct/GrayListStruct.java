@@ -6,7 +6,7 @@ public class GrayListStruct extends BlackListStruct{
     public GrayListStruct (BlackListStruct data) {
         super.Name = data.Name;
         super.No = data.No;
-        super.Paraments = data.Paraments;
+        super.Parametes = data.Parametes;
         super.Path = data.Path;
         super.Type = data.Type;
         super.Status = data.Status;

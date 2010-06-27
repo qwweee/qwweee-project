@@ -6,6 +6,7 @@ import java.util.HashMap;
 import Project.StaticManager;
 import Project.config.Config;
 import Project.db.DBFunction;
+import Project.email.SendMail;
 import Project.mainThread.Detection;
 import Project.mainThread.DnsAnalysis;
 import Project.mainThread.TaskSchedule;
@@ -103,7 +104,8 @@ public class DetectSet {
     public TaskSnmpGet tasksnmpget;
     private TaskSWRunListener swlistener;
     private TaskTCPListener tcplistener;
-    private ArrayList<BlackListStruct> comparerList;
+    public ArrayList<BlackListStruct> comparerList;
+    public int grayListCount;
     /**
      * @param ip
      */
@@ -128,6 +130,10 @@ public class DetectSet {
         this.tcpsnmptable = new SnmpGetTable(ip, community, Config.TCPCONNECT, tcplistener);
         this.swsnmptable = new SnmpGetTable(ip, community, Config.SWRUNTABLE, swlistener);
         this.comparerList = new ArrayList<BlackListStruct>() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 7811372418804483943L;
             public boolean equals(Object o) {
                 for (Object data : this.toArray()) {
                     if (data.equals(o)){
@@ -145,6 +151,7 @@ public class DetectSet {
                 return -1;
             }
         };
+        this.grayListCount = 0;
         this.starttime = System.currentTimeMillis();
         // TODO z done db 檢查ip table並建立建立DB，失敗System.exit(1)
         if (!DBFunction.getInstance().initAllTable(ip)) {
@@ -220,19 +227,26 @@ public class DetectSet {
                         gray.endTime = System.currentTimeMillis();
                         break;
                     default:
-                        System.err.println("黑名單格式錯誤!");
+                        System.err.println("檢測黑白名單格式錯誤!");
                     }
-                } else {
+                } else { // 如果沒資料
                     switch (tmp.Status) {
                     case StaticManager.BLACKLIST:
-                    case StaticManager.WHITELIST:
+                        // TODO event 通知管理者 有黑名單之處理程序
+                        SendMail.getInstance().sendMail(
+                                String.format("處理程序為：\n程序名稱：%s\n路徑：%s\n參數：%s\n型態：%s\n", 
+                                        tmp.Name, tmp.Path, tmp.Parametes, tmp.Type), 
+                                StaticManager.BLACK_DETECTED, StaticManager.OPTION_SEVERE);
                         comparerList.add(tmp);
+                        break;
+                    case StaticManager.WHITELIST:
                         break;
                     case StaticManager.GRAYLIST:
                         comparerList.add(new GrayListStruct(tmp));
+                        grayListCount++;
                         break;
                     default:
-                        System.err.println("黑名單格式錯誤!");
+                        System.err.println("檢測黑白名單格式錯誤!");
                     }
                 }
             }

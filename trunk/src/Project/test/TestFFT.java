@@ -5,11 +5,13 @@ import java.sql.SQLException;
 import Project.StaticManager;
 import Project.config.Config;
 import Project.config.DBConfig;
+import Project.db.DBFunction;
 import Project.db.DatabaseFactory;
 import Project.email.SendMail;
+import Project.struct.DataStruct;
 import Project.struct.FlowGroup;
-import Project.test.DataStruct;
 import Project.test.TestDB;
+import Project.utils.ExcelUtil;
 import Project.utils.ProcessFFT;
 import Project.utils.FFT.Complex;
 import Project.utils.FFT.DFT;
@@ -26,19 +28,19 @@ public class TestFFT {
         DBConfig.Load();
         DatabaseFactory.setDatabaseSettings(Config.DBDriver, Config.DBURL, Config.DBUser, Config.DBPassword, Config.DBMaxCon);
         DatabaseFactory.getInstance();
-	    String ip = "10.10.32.154";
-	    int index = 20;
-	    FlowGroup[] list = TestDB.getFlowGroups(ip);
+        DBFunction.getInstance();
+	    String ip = "10.10.32.97";
+	    FlowGroup[] list = DBFunction.getInstance().getFlowGroups(ip);
 	    for (int i = 0 ; i < list.length ; i ++) {
-	        DataStruct[] data = TestDB.getFlowsData(ip, list[i].ip, list[i].port);
-	        if (data == null || data.length <= 8) {
+	        DataStruct[] data = DBFunction.getInstance().getFlowsData(ip, list[i].ip, list[i].port, true);
+	        if (data == null || data.length <= Config.GROUPCOUNT) {
 	            //System.out.println(String.format("%15s %4d 無週期特性", list[i].ip,list[i].port));
 	            continue;
 	        }
 	        Complex[] tmp = null;
 	        if ((tmp = ProcessFFT.processFFT(data,list[i].ip,list[i].port)) != null) {
-	            System.out.println(i);
-	            TestDB.writeExcel(ip, list[i].ip, list[i].port, data, false, tmp);
+	            //System.out.println(i);
+	            ExcelUtil.writeExcel(ip, list[i].ip, list[i].port, data, false, tmp);
 	        }
 	    }
 	    /*DataStruct[] data = TestDB.getData(ip, list[index].ip, list[index].port);

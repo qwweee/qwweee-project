@@ -57,6 +57,10 @@ public final class DBConfig {
             INSERTBLACKLIST = settings.getProperty("InsertBlackList", "INSERT INTO `project`.`blacklist` (`no`,`name`,`path`,`parameters`,`type`,`status`) VALUES (NULL,?,?,?,?,?);");
             UPDATEBLACKLIST = settings.getProperty("UpdateBlackList", "UPDATE `project`.`blacklist` SET `status`='%d' WHERE (`no`='%d');");
             REMOVEBLACKLIST = settings.getProperty("RemoveBlackList", "DELETE FROM `project`.`blacklist` WHERE (`no`='%d');");
+            // NETFLOW ANALYSIS
+            NETFLOWGROUP = settings.getProperty("NetflowGroup", "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' AND `flow`.`SrcPort` <> '161' AND `flow`.`DstPort` <> '162' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= %d;");
+            NETFLOWGRAYGROUP = settings.getProperty("NetflowGrayGroup", "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' AND `flow`.`SrcPort` <> '161' AND `flow`.`DstPort` <> '162' `flow`.`Stamp` >= ? AND `flow`.`Stamp` <= ? GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= %d;");
+            NETFLOWDATASET = settings.getProperty("NetflowDataSet", "");
             //CREATEDB = settings.getProperty("", "");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -95,4 +99,8 @@ public final class DBConfig {
     public static String INSERTBLACKLIST;
     public static String UPDATEBLACKLIST;
     public static String REMOVEBLACKLIST;
+    
+    public static String NETFLOWGROUP;
+    public static String NETFLOWDATASET;
+    public static String NETFLOWGRAYGROUP;
 }

@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import org.jfree.ui.RefineryUtilities;
+
 import jxl.Workbook;
 import jxl.write.WritableImage;
 import jxl.write.WritableSheet;
@@ -26,6 +28,7 @@ import Project.config.DBConfig;
 import Project.db.DBFunction;
 import Project.db.DatabaseFactory;
 import Project.email.SendMail;
+import Project.struct.DataStruct;
 import Project.struct.FlowGroup;
 import Project.utils.ProcessFFT;
 import Project.utils.SQLUtil;
@@ -38,10 +41,9 @@ import Project.utils.FFT.Complex;
 public class TestDB {
     /**
      * @param args
-     * @throws SQLException 
-     * @throws IOException 
+     * @throws Exception 
      */
-    public static void main(String[] args) throws SQLException, IOException {
+    public static void main(String[] args) throws Exception {
         Config.Load();
         DBConfig.Load();
         DatabaseFactory.setDatabaseSettings(Config.DBDriver, Config.DBURL, Config.DBUser, Config.DBPassword, Config.DBMaxCon);
@@ -53,6 +55,7 @@ public class TestDB {
         for (int i = 0 ; i < list.length ; i ++) {
             getFlowsData(ip, list[i].ip, list[i].port);
         }
+        //write();
         //getData("10.10.32.154","163.22.32.101" , 6667);
         //getData("10.10.32.154","10.10.32.33" , 445);
         //getData("10.10.64.100", "163.22.32.191", 80);
@@ -67,87 +70,30 @@ public class TestDB {
         }
         System.out.println(gcd);
     }
-    public static FlowGroup[] getFlowGroups(String ip, long start, long end) {
-        Connection con = null;
-        PreparedStatement pstm = null;
-        ResultSet rs = null;
-        ArrayList<FlowGroup> data = new ArrayList<FlowGroup>();
-        String sql = "SELECT * FROM (SELECT flow.DstAddr, flow.DstPort, Count(flow.DstPort) as `count`, Sum(flow.dOctets) as `sum` FROM flow WHERE flow.SrcAddr =  '%s' AND flow.SrcPort <>  '161' AND flow.DstPort <>  '162'  GROUP BY flow.DstAddr, flow.DstPort) as `result` WHERE  `result`.`count` >= '2';";
-        // `flow`.`Stamp` >= ? AND `flow`.`Stamp` <= ?
-        sql = "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' AND `flow`.`SrcPort` <> '161' AND `flow`.`DstPort` <> '162' `flow`.`Stamp` >= ? AND `flow`.`Stamp` <= ? GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= 8;";
-        sql = String.format(sql, ip, ip);
-        //System.out.println(sql);
-        try {
-            con = DatabaseFactory.getInstance().getConnection();
-            pstm = con.prepareStatement(sql);
-            pstm.setTimestamp(1, new Timestamp(start));
-            pstm.setTimestamp(2, new Timestamp(end));
-            rs = pstm.executeQuery();
-            while (rs.next()) {
-                FlowGroup set = new FlowGroup();
-                set.ip = rs.getString("DstAddr");
-                set.port = rs.getInt("DstPort");
-                set.count = rs.getInt("count");
-                data.add(set);
-                //set.printAll();
-            }
-            SQLUtil.close(rs, pstm, con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            SQLUtil.close(rs, pstm, con);
-        }
-        //System.out.println(data.size());
-        FlowGroup[] result = new FlowGroup[data.size()];
-        result = data.toArray(result);
-        return result;
-    }
-    public static FlowGroup[] getFlowGroups(String ip) {
-        Connection con = null;
-        PreparedStatement pstm = null;
-        ResultSet rs = null;
-        ArrayList<FlowGroup> data = new ArrayList<FlowGroup>();
-        String sql = "SELECT * FROM (SELECT flow.DstAddr, flow.DstPort, Count(flow.DstPort) as `count`, Sum(flow.dOctets) as `sum` FROM flow WHERE flow.SrcAddr =  '%s' AND flow.SrcPort <>  '161' AND flow.DstPort <>  '162'  GROUP BY flow.DstAddr, flow.DstPort) as `result` WHERE  `result`.`count` >= '2';";
-        sql = "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' AND `flow`.`SrcPort` <> '161' AND `flow`.`DstPort` <> '162' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= 8;";
-        sql = String.format(sql, ip, ip);
-        //System.out.println(sql);
-        try {
-            con = DatabaseFactory.getInstance().getConnection();
-            pstm = con.prepareStatement(sql);
-            rs = pstm.executeQuery();
-            while (rs.next()) {
-                FlowGroup set = new FlowGroup();
-                set.ip = rs.getString("DstAddr");
-                set.port = rs.getInt("DstPort");
-                set.count = rs.getInt("count");
-                data.add(set);
-                //set.printAll();
-            }
-            SQLUtil.close(rs, pstm, con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            SQLUtil.close(rs, pstm, con);
-        }
-        //System.out.println(data.size());
-        FlowGroup[] result = new FlowGroup[data.size()];
-        result = data.toArray(result);
-        return result;
-    }
-    public static DataStruct[] getFlowsData(String ip, String dstip, int port) {
-        String sql = "SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC;";
-        //query = "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= 2;";
-        sql = "SELECT `flow`.`dOctets`, `flow`.`Stamp`, `flow`.`aFirst`, `flow`.`dPkts` FROM `%s`.`flow` WHERE flow.DstPort = '%d' AND flow.DstAddr = '%s' ORDER BY flow.aFirst ASC"; 
-        sql = String.format(sql, ip, port, dstip);
-        //System.out.println(query);
-        DatabaseFactory.setDatabaseSettings
-        ("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/project?useUnicode=true&characterEncoding=utf8",
-                "root", "ji394su3", 100);
+    private static void connectDB() {
+        Config.Load();
+        DBConfig.Load();
+        DatabaseFactory.setDatabaseSettings(Config.DBDriver, Config.DBURL, Config.DBUser, Config.DBPassword, Config.DBMaxCon);
         try {
             DatabaseFactory.getInstance();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public static FlowGroup[] getFlowGroups(String ip, long start, long end) {
+        return DBFunction.getInstance().getFlowGroups(ip, start, end);
+    }
+    public static FlowGroup[] getFlowGroups(String ip) {
+        return DBFunction.getInstance().getFlowGroups(ip);
+    }
+    public static DataStruct[] getFlowsData(String ip, String dstip, int port) {
+        return DBFunction.getInstance().getFlowsData(ip, dstip, port, true);
+        /*String sql = "SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC;";
+        //query = "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= 2;";
+        sql = "SELECT `flow`.`dOctets`, `flow`.`Stamp`, `flow`.`aFirst`, `flow`.`dPkts` FROM `%s`.`flow` WHERE flow.DstPort = '%d' AND flow.DstAddr = '%s' ORDER BY flow.aFirst ASC"; 
+        sql = String.format(sql, ip, port, dstip);
+        //System.out.println(query);
+        connectDB();
         Connection con = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
@@ -210,6 +156,7 @@ public class TestDB {
             count = (count == size || count == (size-1) || count == (size+1))?count : (count/2);
             //count = (count == size || count == (size-1))?count : (count/2);
         }
+        //count = (int) Math.round(Math.pow(2, count));
         //System.out.println(String.format("gcd %5d count %5d end %5d", gcd, count, size));
         DataStruct[] result = new DataStruct[count];
         for (int i = 0 ; i < result.length ; i ++) {
@@ -235,8 +182,8 @@ public class TestDB {
         tmp = 0;
         boolean isScan = false;
         for (int i = 0 ; i < result.length ; i ++) {
-            //System.out.println(String.format("%8d %2d", result[i].dataSize, result[i].same));
-            if (result[i].same >= 4) {
+            // TODO detect 判斷scan
+            if (result[i].same >= Config.SCANCOUNT) {
                 isScan = true;
             }
             if (result[i].dataSize != 0) {
@@ -248,7 +195,7 @@ public class TestDB {
             System.out.println(String.format("%15s %4d Scan", dstip, port));
             // TODO event 通知管理者 懷疑掃描網路或攻擊
             SendMail.getInstance().sendMail(String.format("%s\n%d\nScan", dstip, port), StaticManager.SCAN_DETECTED, StaticManager.OPTION_WARNING);
-            writeExcel(ip,dstip,port,result,true,ProcessFFT.processFFT(result, dstip, port));
+            writeExcel(ip,dstip,port,result,true,ProcessFFT.processFFT(result, dstip, port, true));
             return null;
         }
         if (tmp == result.length || tmp <= 3) {
@@ -261,45 +208,17 @@ public class TestDB {
         }
         //System.out.println(String.format("%15s %4d", dstip, port));
         //System.out.println(String.format("gcd %5d count %5d end %5d", gcd, count, size));
-        return result;
+        return result;*/
     }
-    public static void writeExcel(String ip, String dstip, int port, DataStruct[] data, boolean isScan, Complex[] fft) {
-        File dir = new File("./test/"+ip);
-        dir.mkdir();
-        String filename =dir.getPath()+"/"+dstip+"_"+port+(isScan?"scan":"")+".xls"; 
-        //System.out.println(filename);
-        try {
-            WritableWorkbook workbook = Workbook.createWorkbook(new File(filename));
-            WritableSheet sheet = workbook.createSheet("First Sheet", 0);
-            Number number = null;
-            for (int i = 0 ; i < data.length ; i ++) {
-                number = new Number(0,i+1,data[i].dataSize);
-                sheet.addCell(number);
-            }
-            number = new Number(1,0,data.length);
-            sheet.addCell(number);
-            number = new Number(2,0,data[0].gcd);
-            sheet.addCell(number);
-            if (fft != null) {
-                for (int i = 0 ; i < fft.length ; i ++) {
-                    number = new Number(3,i+1,Complex.abs(fft[i]));
-                    sheet.addCell(number);
-                }
-            }
-            workbook.write();
-            workbook.close(); 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (RowsExceededException e) {
-            e.printStackTrace();
-        } catch (WriteException e) {
-            e.printStackTrace();
-        } 
-    }
-    public static void writeImage() {
-        File file = new File("./test/test.png");
-        WritableImage a = new WritableImage(0, 0, 200, 100, file);
-    }
+    public static void write()throws Exception{
+        WritableWorkbook wwb=Workbook.createWorkbook(new File("test/test.xls"));
+        WritableSheet ws=wwb.createSheet("Test Sheet 1",0);
+        File file=new File("test/test.png");
+        WritableImage image=new WritableImage(5, 1, 6, 18,file);
+        ws.addImage(image);
+        wwb.write();
+        wwb.close();
+    } 
     public static DataStruct[] printFlowsData(String ip, String dstip, int port) {
         String query = "SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC;";
         //query = "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= 2;";

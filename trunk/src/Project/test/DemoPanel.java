@@ -10,7 +10,7 @@ public class DemoPanel extends JPanel {
 
     public DemoPanel(LayoutManager layoutmanager) {
         super(layoutmanager);
-        charts = new ArrayList();
+        charts = new ArrayList<JFreeChart>();
     }
 
     public void addChart(JFreeChart jfreechart) {

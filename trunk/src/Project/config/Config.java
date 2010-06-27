@@ -121,6 +121,34 @@ public final class Config {
      */
     public static String APACHE_PATH;
     /**
+     * 存儲圖片的寬 (810)
+     */
+    public static int IMAGEWIDTH;
+    /**
+     * 儲存圖片的高 (500)
+     */
+    public static int IMAGEHEIGHT;
+    /**
+     * 放入Excel的寬/欄 (20)
+     */
+    public static int EXCELWIDTH;
+    /**
+     * 放入Excel的高/列 (24)
+     */
+    public static int EXCELHEIGHT;
+    /**
+     * 一單位中掃描次數標準 (10)
+     */
+    public static int SCANCOUNT;
+    /**
+     * 檢測FFT分析對稱相似率 (0.8)
+     */
+    public static double SAMERATE;
+    /**
+     * NetFlow檢測最少要有的資料數 (8)
+     */
+    public static int GROUPCOUNT;
+    /**
      * 設定檔的位置
      */
     public static final String CONFIG_FILE = "./config/config.properties";
@@ -176,6 +204,22 @@ public final class Config {
             SMTPSERVER = settings.getProperty("SmtpServer", "smtp.ncnu.edu.tw");
             SENDERMAIL = settings.getProperty("SenderMail", "cnclab@im.ncnu.edu.tw");
             MANAGERMAIL = settings.getProperty("ManagerMail", "s97213521@ncnu.edu.tw");
+            /**
+             * Image config
+             */
+            IMAGEWIDTH = Integer.parseInt(settings.getProperty("ImageWidth", "680"));
+            IMAGEHEIGHT = Integer.parseInt(settings.getProperty("ImageHeight", "420"));
+            /**
+             * Excel image config
+             */
+            EXCELWIDTH = Integer.parseInt(settings.getProperty("ExcelWidth", "20"));
+            EXCELHEIGHT = Integer.parseInt(settings.getProperty("ExcelHeight", "22"));
+            /**
+             * FFT config
+             */
+            SAMERATE = Double.parseDouble(settings.getProperty("SameRate", "0.8"));
+            SCANCOUNT = Integer.parseInt(settings.getProperty("ScanCount", "10"));
+            GROUPCOUNT = Integer.parseInt(settings.getProperty("GroupCount", "8"));
             //variable = settings.getProperty("", "");
             /**
              * default setup
