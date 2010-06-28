@@ -545,12 +545,11 @@ public class DBFunction {
         // `flow`.`Stamp` >= ? AND `flow`.`Stamp` <= ?
         sql = "SELECT * FROM (SELECT `flow`.`SrcAddr`, `flow`.`DstAddr`, `flow`.`dPkts`, `flow`.`dOctets`, `flow`.`SrcPort`, `flow`.`DstPort`, Count(`flow`.`DstPort`) as count FROM `%s`.`flow` WHERE `flow`.`SrcAddr` = '%s' AND `flow`.`SrcPort` <> '161' AND `flow`.`DstPort` <> '162' `flow`.`Stamp` >= ? AND `flow`.`Stamp` <= ? GROUP BY `flow`.`DstAddr`, `flow`.`DstPort` ORDER BY `flow`.`DstAddr` ASC, `flow`.`DstPort` ASC) AS `result` WHERE `result`.`count` >= %d;";
         sql = DBConfig.NETFLOWGRAYGROUP;
-        sql = String.format(sql, ip, ip, Config.GROUPCOUNT);
+        sql = String.format(sql, ip, ip, new Timestamp(start), new Timestamp(end),Config.GROUPCOUNT);
+        //System.out.println(sql);
         try {
             con = DatabaseFactory.getInstance().getConnection();
             pstm = con.prepareStatement(sql);
-            pstm.setTimestamp(1, new Timestamp(start));
-            pstm.setTimestamp(2, new Timestamp(end));
             rs = pstm.executeQuery();
             while (rs.next()) {
                 FlowGroup set = new FlowGroup();

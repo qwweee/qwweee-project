@@ -40,7 +40,7 @@ public class SnmpGetTable {
     /**
      * SNMP table抓取資料的物件
      */
-    private SnmpTable table;
+    public SnmpTable table;
     private String oid;
     private SnmpTableListener listener;
     /**
@@ -91,7 +91,7 @@ public class SnmpGetTable {
         } catch (DataException e) {
             e.printStackTrace();
         }
-        table.setRetries(3);
+        table.setRetries(Config.RETRYTIMES);
         table.setPollInterval(Config.PER_BOOT_DETECT_TIME);
     }
     public void addListener() {

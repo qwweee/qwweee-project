@@ -3,7 +3,6 @@ package Project.mainThread.snmp.task;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import Project.StaticManager;
 import Project.config.Config;
 import Project.db.DBFunction;
 import Project.html.HTML;
@@ -17,17 +16,20 @@ import com.adventnet.snmp.beans.SnmpTableListener;
 public class TaskSWRunListener implements SnmpTableListener{
     private DetectSet host;
     private boolean isBoot;
+    private boolean isListener;
     private int mapcount;
     private int mapsize;
     private int count;
     public TaskSWRunListener(DetectSet host) {
         this.host = host;
         this.isBoot = true;
+        this.isListener = true;
         this.count = 0;
         this.mapcount = 0;
         this.mapsize = 0;
     }
     private synchronized void processData(SnmpTable table) {
+        //System.out.println("有"+table.getRowCount()+"個entry");
         for (int i=0;i<table.getRowCount();i++) {
             table.setDataType(SnmpTable.STRING_DATA);
             String key = table.getValueAt(i,0).toString();
@@ -65,19 +67,21 @@ public class TaskSWRunListener implements SnmpTableListener{
         if (count == Config.BOOT_DETECT_RANGE*60/Config.PER_BOOT_DETECT_TIME && isBoot){
             this.isBoot = false;
             System.out.println(host.ip+"\tSW開機時間檢測完畢\t" + mapcount + "/" + mapsize);
-            StaticManager.printDate(System.currentTimeMillis());
+            //StaticManager.printDate(System.currentTimeMillis());
             table.setPollInterval(Config.PER_OTHER_DETECT_TIME);
             count = 0;
         }
         // TODO z done 其他檢測時間結束 關閉Thread (snmp)
         if (count == Config.OTHER_DETECT_RANGE*60/Config.PER_OTHER_DETECT_TIME && !isBoot) {
             System.out.println(host.ip+"\tSW其他時間檢測完畢\t" + mapcount + "/" + mapsize);
-            StaticManager.printDate(System.currentTimeMillis());
+            //StaticManager.printDate(System.currentTimeMillis());
             count = 0;
             stopListener(table);
+            isListener = false;
         }
     }
-    private void stopListener(SnmpTable table) {
+    public synchronized void stopListener(SnmpTable table) {
+        System.out.println(host.ip+" 關閉SWListener");
         table.stopPollingTable();
         table.removeSnmpTableListener(this);
         writeDB();
@@ -126,7 +130,7 @@ public class TaskSWRunListener implements SnmpTableListener{
             if (table.getRowCount() == 0) { // no rows and we're being notified 關機時
                 System.err.println(table.getErrorString());
                 host.setShutdown();
-                stopListener(table);
+                //stopListener(table);
             }
             return;
         }

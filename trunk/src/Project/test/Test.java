@@ -16,6 +16,7 @@ import Project.config.Config;
 import Project.config.DBConfig;
 import Project.db.DatabaseFactory;
 import Project.gui.BlackList;
+import Project.struct.DetectSet;
 import Project.utils.SQLUtil;
 
 /**
@@ -37,7 +38,7 @@ public class Test {
         DBConfig.Load();
         DatabaseFactory.setDatabaseSettings(Config.DBDriver, Config.DBURL, Config.DBUser, Config.DBPassword, Config.DBMaxCon);
         DatabaseFactory.getInstance();
-        //DetectSet set = new DetectSet("10.10.32.97");
+        //DetectSet set = new DetectSet("163.22.32.101");
         //set.setLinkUp();
         //selectDB();
         BlackListTest();

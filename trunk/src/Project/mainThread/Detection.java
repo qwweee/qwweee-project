@@ -3,7 +3,6 @@
  */
 package Project.mainThread;
 
-
 import Project.StaticManager;
 import Project.config.Config;
 import Project.db.DBFunction;
@@ -32,7 +31,7 @@ public class Detection extends Thread {
      * @see Project.struct.Structure.DataStruct
      */
     public Detection(DetectSet data){
-        this.setName("Detection");
+        this.setName(data.ip + " Detection");
         host = data;
         host.starttime = System.currentTimeMillis();
         this.setPriority(Thread.MAX_PRIORITY);
@@ -54,6 +53,7 @@ public class Detection extends Thread {
                 e.printStackTrace();
             }
             host.tasksnmpget.go();
+            //System.out.println("systime get");
         }
         // TODO z done 中斷dns反查
         host.setTaskStopTime();
@@ -79,7 +79,7 @@ public class Detection extends Thread {
                     GrayListStruct gray = (GrayListStruct)tmp;
                     if (detectNetflow(gray.startTime, gray.endTime)) {
                         // TODO detect 加入黑名單
-                        insertBlackList(gray, StaticManager.BLACKLIST);
+                        //insertBlackList(gray, StaticManager.BLACKLIST);
                         // TODO event 通知管理者 將灰名單加入黑名單
                         SendMail.getInstance().sendMail(
                                 String.format("加入黑名單之處理程序為：\n程序名稱：%s\n路徑：%s\n參數：%s\n型態：%s\n" +
@@ -87,7 +87,7 @@ public class Detection extends Thread {
                                 StaticManager.BLACKLIST_ADD, StaticManager.OPTION_INFO);
                     } else {
                         // TODO detect 加入白名單
-                        insertBlackList(gray, StaticManager.WHITELIST);
+                        //insertBlackList(gray, StaticManager.WHITELIST);
                         // TODO event 通知管理者 將灰名單加入白名單
                         SendMail.getInstance().sendMail(
                                 String.format("加入白名單之處理程序為：\n程序名稱：%s\n路徑：%s\n參數：%s\n型態：%s\n" +
@@ -112,6 +112,7 @@ public class Detection extends Thread {
         }
     }
     private boolean detectNetflow(long start, long end) {
+        //System.out.println(new Timestamp(start)+"\t"+new Timestamp(end));
         FlowGroup[] list = DBFunction.getInstance().getFlowGroups(host.ip, start, end);
         for (int i = 0 ; i < list.length ; i ++) {
             DataStruct[] data = DBFunction.getInstance().getFlowsData(host.ip, list[i].ip, list[i].port, false);

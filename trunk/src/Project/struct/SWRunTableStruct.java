@@ -53,10 +53,6 @@ public class SWRunTableStruct {
      */
     public long EndTime;
     /**
-     * 要輸出的欄位標頭
-     */
-    public static String[] Title = {"索引", "名稱", "ID", "路徑", "參數", "型態", "狀態", "開始時間"};
-    /**
      * 印出這筆資料的所有的資訊
      *
      */

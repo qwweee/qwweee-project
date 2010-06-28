@@ -82,6 +82,6 @@ public class DnsAnalysis extends Thread {
                 System.err.println(ip+"\t"+dns+" error!");
             }
         }
-        System.out.println(ip+" dns analysis thread end!");
+        //System.out.println(ip+" dns analysis thread end!");
     }
 }

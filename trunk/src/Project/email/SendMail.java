@@ -23,6 +23,7 @@ public class SendMail {
     private SendMail() {
     }
     public void sendMail(String message, String type, String option) {
+        System.out.println(type);
         return ;
         /*Socket smtpSocket = null;
         try {

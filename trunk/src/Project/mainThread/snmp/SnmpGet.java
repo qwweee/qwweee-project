@@ -3,6 +3,8 @@ package Project.mainThread.snmp;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import Project.config.Config;
+
 import com.adventnet.snmp.beans.SnmpTarget;
 import com.adventnet.snmp.mibs.MibException;
 
@@ -52,8 +54,8 @@ public class SnmpGet {
             e.printStackTrace();
             System.exit(1);
         }
-        target.setTimeout(3000);
-        target.setRetries(3);
+        target.setTimeout(Config.PER_OTHER_DETECT_TIME);
+        target.setRetries(Config.RETRYTIMES);
     }
     /**
      * @param oid
