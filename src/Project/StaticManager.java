@@ -91,6 +91,14 @@ public class StaticManager {
     }
     public static final Font default_font = new Font("標楷體", Font.BOLD, 18);
     public static final Font menu_font = new Font("標楷體", Font.PLAIN, 18);
+    /**
+     * 要輸出的欄位標頭
+     */
+    public static final String[] TCPTitle = {"狀態", "本地端Address", "本地端Port", "目的端Address", "目的端Port", "開始時間", "map"};
+    /**
+     * 要輸出的欄位標頭
+     */
+    public static final String[] SWTitle = {"索引", "名稱", "ID", "路徑", "參數", "型態", "狀態", "開始時間", "map"};
     public static final ArrayList<BlackListStruct> BlackList = new ArrayList<BlackListStruct>() {
         public boolean equals(Object o) {
             for (Object data : this.toArray()) {

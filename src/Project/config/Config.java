@@ -149,6 +149,10 @@ public final class Config {
      */
     public static int GROUPCOUNT;
     /**
+     * SNMP重試次數 (1)
+     */
+    public static int RETRYTIMES;
+    /**
      * 設定檔的位置
      */
     public static final String CONFIG_FILE = "./config/config.properties";
@@ -197,6 +201,7 @@ public final class Config {
              */
             NETFLOWBUFFER = Integer.parseInt(settings.getProperty("NetflowBuffer", "10240"));
             APACHE_PATH = settings.getProperty("ApachePath", "/var/www/html/detect/");
+            RETRYTIMES = Integer.parseInt(settings.getProperty("RetryTimes", "1"));
             /**
              * mail setup
              */

@@ -38,19 +38,19 @@ public class CloseZombie extends Thread {
     public void run(){
         while(!isStop){
             try{
-                sleep(3000);
+                //sleep(3000);
                 Object o = queue.deQueue(); 
-                System.out.println(o.getClass().getName());
+                //System.out.println(o.getClass().getName());
                 if (o instanceof Detection) {
                     Detection zombie = (Detection)o;
-                    StaticManager.IPList.remove(zombie.getHost());
+                    //StaticManager.IPList.remove(zombie.getHost());
                     zombie.join();
-                    System.out.println("Detection Thread is Join");
+                    System.out.println(zombie.getHost() + " Detection Thread is Join");
                 } else if (o instanceof DnsAnalysis){
                     DnsAnalysis zombie = (DnsAnalysis)o;
                     StaticManager.FlowList.remove(zombie.ip);
                     zombie.join();
-                    System.out.println("DnsAnalysis Thread is Join");
+                    System.out.println(zombie.ip + " DnsAnalysis Thread is Join");
                 } else {
                     Thread zombie = (Thread)o;
                     zombie.join();

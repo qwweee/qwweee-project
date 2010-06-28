@@ -16,6 +16,6 @@ public class TimeUtil {
      * @return
      */
     public static String timeToString(long time) {
-        return DateFormat.getTimeInstance().format(new Date(time));
+        return DateFormat.getInstance().format(new Date(time));
     }
 }

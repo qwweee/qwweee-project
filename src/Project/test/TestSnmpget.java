@@ -107,7 +107,7 @@ public class TestSnmpget implements SnmpTableListener {
 
     SnmpTable table = (SnmpTable)e.getSource();
     if (e.isEndOfTable()) { // 最後抓到資料的時候
-        StaticManager.printDate(System.currentTimeMillis());
+        //StaticManager.printDate(System.currentTimeMillis());
         //System.out.println(count);
         count ++;
         if (count == 2) {

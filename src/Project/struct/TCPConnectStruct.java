@@ -45,10 +45,6 @@ public class TCPConnectStruct {
      */
     public long EndTime;
     /**
-     * 要輸出的欄位標頭
-     */
-    public static String[] Title = {"狀態", "本地端Address", "本地端Port", "目的端Address", "目的端Port", "開始時間"};
-    /**
      * 印出這筆資料的所有的資訊
      *
      */

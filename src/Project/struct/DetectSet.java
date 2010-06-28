@@ -121,7 +121,7 @@ public class DetectSet {
         this.analysis = new DnsAnalysis(flowQueue, ip);
         this.tasksnmpget = new TaskSnmpGet(snmp, this, Config.SYSUPTIME);
         this.sysThread = new Thread(tasksnmpget);
-        this.sysThread.setName("SNMPGet");
+        this.sysThread.setName(ip + " SNMPGet");
         this.sysThread.setPriority(Thread.MAX_PRIORITY);
         this.fswcount = 0;
         this.ftcpcount = 0;
@@ -208,47 +208,62 @@ public class DetectSet {
     public boolean isShutdown() {
         return this.isShutdown;
     }
-    public void setShutdown() {
-        this.isShutdown = true;
+    public synchronized void setShutdown() {
+        if (!isShutdown()) {
+            System.out.println(ip+" 已經關機");
+            StaticManager.printDate(System.currentTimeMillis());
+            this.isShutdown = true;
+            tcplistener.stopListener(tcpsnmptable.table);
+            swlistener.stopListener(swsnmptable.table);
+            StaticManager.IPList.remove(ip);
+        }
     }
     public void checkGrayList() {
+        //System.out.println("比對黑白名單 "+sw.size());
         StaticManager.updateBlackList();
         for (SWRunTableStruct data : sw.values()) {
             if (StaticManager.BlackList.equals(data)) { // 黑白灰名單內有資料
                 BlackListStruct tmp = StaticManager.BlackList.get(StaticManager.BlackList.indexOf(data));
-                if (comparerList.equals(tmp)) { // 已經有在比對名單內
-                    BlackListStruct comparer = comparerList.get(comparerList.indexOf(tmp));
-                    switch (tmp.Status) {
-                    case StaticManager.BLACKLIST:
-                    case StaticManager.WHITELIST:
-                        break;
-                    case StaticManager.GRAYLIST:
-                        GrayListStruct gray = (GrayListStruct) comparer;
-                        gray.endTime = System.currentTimeMillis();
-                        break;
-                    default:
-                        System.err.println("檢測黑白名單格式錯誤!");
-                    }
-                } else { // 如果沒資料
-                    switch (tmp.Status) {
-                    case StaticManager.BLACKLIST:
-                        // TODO event 通知管理者 有黑名單之處理程序
-                        SendMail.getInstance().sendMail(
-                                String.format("處理程序為：\n程序名稱：%s\n路徑：%s\n參數：%s\n型態：%s\n", 
-                                        tmp.Name, tmp.Path, tmp.Parametes, tmp.Type), 
-                                StaticManager.BLACK_DETECTED, StaticManager.OPTION_SEVERE);
-                        comparerList.add(tmp);
-                        break;
-                    case StaticManager.WHITELIST:
-                        break;
-                    case StaticManager.GRAYLIST:
-                        comparerList.add(new GrayListStruct(tmp));
-                        grayListCount++;
-                        break;
-                    default:
-                        System.err.println("檢測黑白名單格式錯誤!");
-                    }
-                }
+                checkComparerList(tmp);
+            } else { //加入灰名單
+                checkComparerList(new GrayListStruct(data.Name, data.Index, data.Parametes, data.Path, data.Type, StaticManager.GRAYLIST, data.StartTime));
+            }
+        }
+    }
+    private void checkComparerList(BlackListStruct tmp) {
+        if (comparerList.equals(tmp)) { // 已經有在比對名單內
+            //System.out.println("在比對名單裡面");
+            BlackListStruct comparer = comparerList.get(comparerList.indexOf(tmp));
+            switch (tmp.Status) {
+            case StaticManager.BLACKLIST:
+            case StaticManager.WHITELIST:
+                break;
+            case StaticManager.GRAYLIST:
+                GrayListStruct gray = (GrayListStruct) comparer;
+                gray.endTime = System.currentTimeMillis();
+                break;
+            default:
+                System.err.println("檢測黑白名單格式錯誤!");
+            }
+        } else { // 如果沒資料
+            //System.out.println("沒有在比對名單裡面");
+            switch (tmp.Status) {
+            case StaticManager.BLACKLIST:
+                // TODO event 通知管理者 有黑名單之處理程序
+                SendMail.getInstance().sendMail(
+                        String.format("處理程序為：\n程序名稱：%s\n路徑：%s\n參數：%s\n型態：%s\n", 
+                                tmp.Name, tmp.Path, tmp.Parametes, tmp.Type), 
+                        StaticManager.BLACK_DETECTED, StaticManager.OPTION_SEVERE);
+            case StaticManager.WHITELIST:
+                comparerList.add(tmp);
+                break;
+            case StaticManager.GRAYLIST:
+                //System.out.println("加入灰名單");
+                comparerList.add(new GrayListStruct(tmp));
+                grayListCount++;
+                break;
+            default:
+                System.err.println("檢測黑白名單格式錯誤!");
             }
         }
     }

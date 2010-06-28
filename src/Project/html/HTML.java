@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Project.StaticManager;
 import Project.config.Config;
 import Project.struct.DetectSet;
 import Project.struct.SWRunTableStruct;
@@ -40,14 +41,13 @@ public final class HTML {
                    "<title>TCPConnectionTable</title>\n" +
                    "</head>\n" +
                    "<body>\n" +
-                   "<table align='center' border='5'><tr bgColor='darkblue'>\n" +
-                   "<th><font color=white></font></th>\n");
-        for (int i = 0 ; i < TCPConnectStruct.Title.length ; i ++) {
-            tmp.append("<th><font color=white>"+TCPConnectStruct.Title[i]+"</font></th>\n");
+                   "<table align='center' border='5'><tr bgColor='darkblue'>\n");
+        for (int i = 0 ; i < StaticManager.TCPTitle.length ; i ++) {
+            tmp.append("<th><font color=white>"+StaticManager.TCPTitle[i]+"</font></th>\n");
         }
         tmp.append("</tr>\n");
         for (int i = 0 ; i < data.size() ; i ++) {
-            tmp.append("<tr  bgColor='lightyellow'><td bgColor='lightgreen'>\n");
+            tmp.append("<tr  bgColor='lightyellow'>\n");
             TCPConnectStruct tmpData = data.get(i);
             tmp.append("<td>" + tmpData.Status + "</td>\n");
             tmp.append("<td>" + tmpData.LocalAddress + "</td>\n");
@@ -78,10 +78,9 @@ public final class HTML {
                    "<title>SWRunTable</title>\n" +
                    "</head>\n" +
                    "<body>\n" +
-                   "<table align='center' border='5'><tr bgColor='darkblue'>\n" +
-                   "<th><font color=white></font></th>\n");
-        for (int i = 0 ; i < SWRunTableStruct.Title.length ; i ++) {
-            tmp.append("<th><font color=white>"+SWRunTableStruct.Title[i]+"</font></th>\n");
+                   "<table align='center' border='5'><tr bgColor='darkblue'>\n");
+        for (int i = 0 ; i < StaticManager.SWTitle.length ; i ++) {
+            tmp.append("<th><font color=white>"+StaticManager.SWTitle[i]+"</font></th>\n");
         }
         tmp.append("</tr>\n");
         for (int i = 0 ; i < data.size() ; i ++) {
