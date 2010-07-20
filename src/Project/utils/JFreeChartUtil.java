@@ -20,11 +20,33 @@ import Project.utils.FFT.Complex;
 
 public class JFreeChartUtil {
     public static void createFFTImage(String ip, String dstip, int port, boolean isScan, String filepath, DataStruct[] data, Complex[] fft) {
-        XYDataset data1 = createSampleData("Source Data", data);
-        XYDataset data2 = createSampleData("FFT Spectrum", fft);
-        String xTitle = String.format("Time(%ds)", data[0].gcd);
-        JFreeChart chart1 = createChartSource("Source Data",xTitle ,"Octets", data1);
-        JFreeChart chart2 = createChartFFT("FFT Spectrum",xTitle,"HZ", data2);
+        XYDataset data1 = createSampleData("All Source Data", data);
+        XYDataset data2 = createSampleData("All FFT Spectrum", fft);
+        int gcd = 0;
+        for (DataStruct set : data) {
+            if (set.gcd != 0) {
+                gcd = (set.gcd==1?set.gcd:(set.gcd/2));
+                break;
+            }
+        }
+        String xTitle = String.format("Time(%ds)", (gcd));
+        JFreeChart chart1 = createChartSource(String.format("%11s %5d Source Data", dstip, port),xTitle ,"Octets", data1);
+        JFreeChart chart2 = createChartFFT(String.format("%11s %5d FFT Spectrum", dstip, port),xTitle,"HZ", data2);
+        savePNG(filepath, chart1, chart2);
+    }
+    public static void createFFTImage(String ip, String dstip, int port, boolean isScan, String filepath, DataStruct[] data, Complex[] fft, String time) {
+        XYDataset data1 = createSampleData(time + " Source Data", data);
+        XYDataset data2 = createSampleData(time + " FFT Spectrum", fft);
+        int gcd = 0;
+        for (DataStruct set : data) {
+            if (set.gcd != 0) {
+                gcd = (set.gcd==1?set.gcd:(set.gcd/2));
+                break;
+            }
+        }
+        String xTitle = String.format("Time(%ds)", (gcd));
+        JFreeChart chart1 = createChartSource(String.format("%11s %5d Source Data", dstip, port),xTitle ,"Octets", data1);
+        JFreeChart chart2 = createChartFFT(String.format("%11s %5d FFT Spectrum", dstip, port),xTitle,"HZ", data2);
         savePNG(filepath, chart1, chart2);
     }
     private static XYDataset createSampleData(String lineName, DataStruct[] data) {

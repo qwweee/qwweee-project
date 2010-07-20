@@ -14,6 +14,7 @@ import Project.StaticManager;
 import Project.config.Config;
 import Project.config.DBConfig;
 import Project.email.SendMail;
+import Project.mainThread.Detection;
 import Project.struct.BlackListStruct;
 import Project.struct.DataStruct;
 import Project.struct.FlowGroup;
@@ -578,6 +579,8 @@ public class DBFunction {
         sql = DBConfig.NETFLOWDATASET;
         sql = String.format(sql, ip, port, dstip);
         int gcd = 0;
+        int same = 0;
+        boolean isScan = false;
         ArrayList<DataStruct> list = new ArrayList<DataStruct>();
         long size = 0, base = 0, perbase = 0;
         try {
@@ -600,12 +603,19 @@ public class DBFunction {
                 DataStruct set = new DataStruct();
                 set.dataSize = data;
                 set.index = (int) ((aFirst - base)/ 1000.0 +0.5);
+                set.same = same;
+                if (size == 0) {
+                    same ++;
+                } else {
+                    // TODO detect 判斷scan
+                    if (same >= Config.SCANCOUNT) {
+                        isScan = true;
+                    }
+                }
                 list.add(set);
                 perbase = aFirst;
             }
-            rs.close();
-            pstm.close();
-            con.close();
+            SQLUtil.close(rs, pstm, con);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -613,7 +623,11 @@ public class DBFunction {
         }
         if (gcd == 0) {
             if (list.size() > 100) {
-                
+                // TODO detect 判斷scan
+                isScan = true;
+                gcd = 1;
+            } else { 
+                return null;
             }
             return null;
         }
@@ -644,7 +658,7 @@ public class DBFunction {
                 break;
             }
             if (tmp == data.index) {
-                result[data.index].same++;
+                result[data.index].same = data.same;
                 result[data.index].dataSize = data.dataSize;
             } else {
                 result[data.index] = data;
@@ -652,12 +666,7 @@ public class DBFunction {
             tmp = data.index;
         }
         tmp = 0;
-        boolean isScan = false;
         for (int i = 0 ; i < result.length ; i ++) {
-            // TODO detect 判斷scan
-            if (result[i].same >= Config.SCANCOUNT) {
-                isScan = true;
-            }
             if (result[i].dataSize != 0) {
                 tmp++;
             }
@@ -669,6 +678,8 @@ public class DBFunction {
                 // TODO event 通知管理者 懷疑掃描網路或攻擊
                 SendMail.getInstance().sendMail(String.format("%s\n%d\nScan", dstip, port), StaticManager.SCAN_DETECTED, StaticManager.OPTION_WARNING);
                 ExcelUtil.writeExcel(ip,dstip,port,result,true,ProcessFFT.processFFT(result, dstip, port, true));
+            } else {
+                Detection.isScan = true;
             }
             return null;
         }

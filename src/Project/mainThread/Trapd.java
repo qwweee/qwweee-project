@@ -3,6 +3,7 @@
  */
 package Project.mainThread;
 
+import Project.LogStream;
 import Project.StaticManager;
 import Project.config.Config;
 import Project.struct.DetectSet;
@@ -77,9 +78,11 @@ public class Trapd {
                         StaticManager.IPList.put(trap.getRemoteHost(), data);
                         StaticManager.FlowList.put(trap.getRemoteHost(), data);
                         System.out.println("add "+data.ip+" to IPList!");
+                        LogStream.getInstance().sysPrint("add "+data.ip+" to IPList!");
                         //data.setLinkUp();
                     } else {
                         System.out.println(trap.getRemoteHost()+" already in list!");
+                        LogStream.getInstance().sysPrint(trap.getRemoteHost()+" already in list!");
                     }
                 } else if (trap.getTrapType() == 3) {
                     // TODO z done task 網路開啟trap 後開始偵測
@@ -94,10 +97,12 @@ public class Trapd {
      */
     private void start(){
         System.out.println("trapd is running!");
+        LogStream.getInstance().sysPrint("trapd is running!");
         receiver.addTrapListener(listener);
     }
     public void stop() {
         receiver.removeTrapListener(listener);
         System.out.println("trapd is ending!");
+        LogStream.getInstance().sysPrint("trapd is ending!");
     }
 }

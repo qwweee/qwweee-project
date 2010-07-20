@@ -29,7 +29,7 @@ public class TestFFT {
         DatabaseFactory.setDatabaseSettings(Config.DBDriver, Config.DBURL, Config.DBUser, Config.DBPassword, Config.DBMaxCon);
         DatabaseFactory.getInstance();
         DBFunction.getInstance();
-	    String ip = "10.10.32.97";
+	    String ip = "10.10.32.154";
 	    FlowGroup[] list = DBFunction.getInstance().getFlowGroups(ip);
 	    for (int i = 0 ; i < list.length ; i ++) {
 	        DataStruct[] data = DBFunction.getInstance().getFlowsData(ip, list[i].ip, list[i].port, true);

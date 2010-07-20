@@ -3,6 +3,7 @@ package Project.struct;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import Project.LogStream;
 import Project.StaticManager;
 import Project.config.Config;
 import Project.db.DBFunction;
@@ -211,6 +212,8 @@ public class DetectSet {
     public synchronized void setShutdown() {
         if (!isShutdown()) {
             System.out.println(ip+" 已經關機");
+            LogStream.getInstance().sysPrint(ip+" 已經關機");
+            StaticManager.sysPrintDate(true);
             StaticManager.printDate(System.currentTimeMillis());
             this.isShutdown = true;
             tcplistener.stopListener(tcpsnmptable.table);

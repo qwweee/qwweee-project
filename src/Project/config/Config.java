@@ -153,6 +153,10 @@ public final class Config {
      */
     public static int RETRYTIMES;
     /**
+     * 是否偵測到關機
+     */
+    public static boolean ALLTIMEDETECT;
+    /**
      * 設定檔的位置
      */
     public static final String CONFIG_FILE = "./config/config.properties";
@@ -190,7 +194,7 @@ public final class Config {
             DBURL = settings.getProperty("URL", "jdbc:mysql://localhost/project?useUnicode=true&characterEncoding=utf8");
             DBUser = settings.getProperty("Login", "root");
             DBPassword = settings.getProperty("Password", "");
-            DBMaxCon = Integer.parseInt(settings.getProperty("MaxConnection", "10"));
+            DBMaxCon = Integer.parseInt(settings.getProperty("MaxConnection", "100"));
             /**
              * queue size setup
              */
@@ -202,6 +206,7 @@ public final class Config {
             NETFLOWBUFFER = Integer.parseInt(settings.getProperty("NetflowBuffer", "10240"));
             APACHE_PATH = settings.getProperty("ApachePath", "/var/www/html/detect/");
             RETRYTIMES = Integer.parseInt(settings.getProperty("RetryTimes", "1"));
+            ALLTIMEDETECT = Boolean.parseBoolean(settings.getProperty("AllTimeDetect", "false"));
             /**
              * mail setup
              */

@@ -196,11 +196,11 @@ public class FFT {
         }
         // normalize output of fft.
 //        if (forward)
-        if(false)
+        /*if(false)
             for (int i = 0; i < r_data.length; i++) {
                 r_data[i] = r_data[i] / (double) n;
                 i_data[i] = i_data[i] / (double) n;
-            }
+            }*/
         in_r = r_data;
         in_r = i_data;
     }
