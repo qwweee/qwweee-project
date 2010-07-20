@@ -40,7 +40,139 @@ public class ExcelUtil {
             }
             number = new Number(1,0,data.length);
             sheet.addCell(number);
-            number = new Number(2,0,data[0].gcd);
+            number = new Number(2,0,(data[0].gcd!=1?(data[0].gcd/2):(data[0].gcd)));
+            sheet.addCell(number);
+            if (fft != null) {
+                for (int i = 0 ; i < fft.length ; i ++) {
+                    number = new Number(3,i+1,Complex.abs(fft[i]));
+                    sheet.addCell(number);
+                }
+            }
+            writeImage(sheet, imagefile);
+            workbook.write();
+            workbook.close(); 
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (RowsExceededException e) {
+            e.printStackTrace();
+        } catch (WriteException e) {
+            e.printStackTrace();
+        } 
+    }
+    public static void writeExcel(String ip, String dstip, int port, DataStruct[] data, boolean isScan, Complex[] fft, String path) {
+        File dir = new File("./test/"+ip);
+        dir.mkdir();
+        dir = new File("./test/"+ip+"/no");
+        dir.mkdir();
+        File scan = new File(dir.getPath()+"/scan");
+        scan.mkdir();
+        String filename = (isScan?scan.getPath():dir.getPath())+"/"+dstip+"_"+port+(isScan?"scan":"")+".xls";
+        String imagefile = ((isScan?scan.getPath():dir.getPath())+"/"+(isScan?"scan":"")+dstip+"_"+port);
+        JFreeChartUtil.createFFTImage(ip, dstip, port, isScan, imagefile, data, fft);
+        try {
+            WritableWorkbook workbook = Workbook.createWorkbook(new File(filename));
+            WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+            Number number = null;
+            for (int i = 0 ; i < data.length ; i ++) {
+                number = new Number(0,i+1,data[i].dataSize);
+                sheet.addCell(number);
+                number = new Number(1,i+1,data[i].same);
+                sheet.addCell(number);
+            }
+            number = new Number(1,0,data.length);
+            sheet.addCell(number);
+            number = new Number(2,0,(data[0].gcd!=1?(data[0].gcd/2):(data[0].gcd)));
+            sheet.addCell(number);
+            if (fft != null) {
+                for (int i = 0 ; i < fft.length ; i ++) {
+                    number = new Number(3,i+1,Complex.abs(fft[i]));
+                    sheet.addCell(number);
+                }
+            }
+            writeImage(sheet, imagefile);
+            workbook.write();
+            workbook.close(); 
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (RowsExceededException e) {
+            e.printStackTrace();
+        } catch (WriteException e) {
+            e.printStackTrace();
+        } 
+    }
+    public static void writeExcel(String ip, String dstip, int port, DataStruct[] data, boolean isScan, Complex[] fft, boolean detected) {
+        File dir = new File("./test/"+ip);
+        dir.mkdir();
+        dir = new File("./test/"+ip+"/gray");
+        dir.mkdir();
+        if (detected) {
+            dir = new File("./test/"+ip+"/gray/no");
+            dir.mkdir();
+        }
+        File scan = new File(dir.getPath()+"/scan");
+        scan.mkdir();
+        String filename = (isScan?scan.getPath():dir.getPath())+"/"+dstip+"_"+port+(isScan?"scan":"")+".xls";
+        String imagefile = ((isScan?scan.getPath():dir.getPath())+"/"+(isScan?"scan":"")+dstip+"_"+port);
+        JFreeChartUtil.createFFTImage(ip, dstip, port, isScan, imagefile, data, fft);
+        try {
+            WritableWorkbook workbook = Workbook.createWorkbook(new File(filename));
+            WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+            Number number = null;
+            for (int i = 0 ; i < data.length ; i ++) {
+                number = new Number(0,i+1,data[i].dataSize);
+                sheet.addCell(number);
+                number = new Number(1,i+1,data[i].same);
+                sheet.addCell(number);
+            }
+            number = new Number(1,0,data.length);
+            sheet.addCell(number);
+            number = new Number(2,0,(data[0].gcd!=1?(data[0].gcd/2):(data[0].gcd)));
+            sheet.addCell(number);
+            if (fft != null) {
+                for (int i = 0 ; i < fft.length ; i ++) {
+                    number = new Number(3,i+1,Complex.abs(fft[i]));
+                    sheet.addCell(number);
+                }
+            }
+            writeImage(sheet, imagefile);
+            workbook.write();
+            workbook.close(); 
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (RowsExceededException e) {
+            e.printStackTrace();
+        } catch (WriteException e) {
+            e.printStackTrace();
+        } 
+    }
+    public static void writeExcel(String ip, String dstip, int port, DataStruct[] data, boolean isScan, Complex[] fft, boolean detected, long start, long end) {
+        File dir = new File("./test/"+ip);
+        dir.mkdir();
+        dir = new File("./test/"+ip+"/gray");
+        dir.mkdir();
+        if (detected) {
+            dir = new File("./test/"+ip+"/gray/no");
+            dir.mkdir();
+        }
+        File scan = new File(dir.getPath()+"/scan");
+        scan.mkdir();
+        String filename = (isScan?scan.getPath():dir.getPath())+"/"+dstip+"_"+port+(isScan?"scan":"")+".xls";
+        String imagefile = ((isScan?scan.getPath():dir.getPath())+"/"+(isScan?"scan":"")+dstip+"_"+port);
+        String time = String.format("%s - %s", TimeUtil.timeToString(start), TimeUtil.timeToString(end));
+        JFreeChartUtil.createFFTImage(ip, dstip, port, isScan, imagefile, data, fft, time);
+        try {
+            WritableWorkbook workbook = Workbook.createWorkbook(new File(filename));
+            WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+            Number number = null;
+            for (int i = 0 ; i < data.length ; i ++) {
+                number = new Number(0,i+1,data[i].dataSize);
+                sheet.addCell(number);
+                number = new Number(1,i+1,data[i].same);
+                sheet.addCell(number);
+            }
+            number = new Number(1,0,data.length);
+            sheet.addCell(number);
+            number = new Number(2,0,(data[0].gcd!=1?(data[0].gcd/2):(data[0].gcd)));
             sheet.addCell(number);
             if (fft != null) {
                 for (int i = 0 ; i < fft.length ; i ++) {

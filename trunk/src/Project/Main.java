@@ -27,6 +27,7 @@ public class Main {
      * @throws SQLException 
      */
     public static void main(String[] args) throws SQLException {
+        LogStream.getInstance();
         Config.Load();
         DBConfig.Load();
         DatabaseFactory.setDatabaseSettings(Config.DBDriver, Config.DBURL, Config.DBUser, Config.DBPassword, Config.DBMaxCon);

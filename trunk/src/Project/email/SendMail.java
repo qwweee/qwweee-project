@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
 
+import Project.LogStream;
 import Project.StaticManager;
 import Project.config.Config;
 import Project.utils.StreamUtil;
@@ -23,7 +24,12 @@ public class SendMail {
     private SendMail() {
     }
     public void sendMail(String message, String type, String option) {
-        System.out.println(type);
+        /*System.out.println(type);
+        System.out.println("-------------------------------------------------");
+        System.out.println(message);
+        System.out.println("-------------------------------------------------");*/
+        LogStream.getInstance().eventPrint("="+type+"=\n");
+        LogStream.getInstance().eventPrint(message);
         return ;
         /*Socket smtpSocket = null;
         try {

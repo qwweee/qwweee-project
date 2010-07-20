@@ -8,6 +8,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+import Project.LogStream;
 import Project.StaticManager;
 import Project.config.Config;
 import Project.utils.Queue;
@@ -46,6 +47,7 @@ public class NetFlowReceiver extends Thread{
         try {
             DatagramSocket socket=new DatagramSocket(port);
             System.out.println("Listen on Netflow Port " + port + " Start ........");
+            LogStream.getInstance().sysPrint("Listen on Netflow Port " + port + " Start ........");
             while(true) {
                 byte[] buffer = new byte[Config.NETFLOWBUFFER];
                 DatagramPacket packet = new DatagramPacket(buffer,buffer.length);

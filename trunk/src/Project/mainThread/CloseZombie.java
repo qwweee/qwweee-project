@@ -3,6 +3,7 @@
  */
 package Project.mainThread;
 
+import Project.LogStream;
 import Project.StaticManager;
 import Project.utils.Queue;
 
@@ -46,15 +47,21 @@ public class CloseZombie extends Thread {
                     //StaticManager.IPList.remove(zombie.getHost());
                     zombie.join();
                     System.out.println(zombie.getHost() + " Detection Thread is Join");
+                    LogStream.getInstance().sysPrint(zombie.getHost() + " Detection Thread is Join ");
+                    StaticManager.sysPrintDate(true);
                 } else if (o instanceof DnsAnalysis){
                     DnsAnalysis zombie = (DnsAnalysis)o;
                     StaticManager.FlowList.remove(zombie.ip);
                     zombie.join();
                     System.out.println(zombie.ip + " DnsAnalysis Thread is Join");
+                    LogStream.getInstance().sysPrint(zombie.ip + " DnsAnalysis Thread is Join");
+                    StaticManager.sysPrintDate(true);
                 } else {
                     Thread zombie = (Thread)o;
                     zombie.join();
                     System.out.println(zombie.getName() + " Thread is Join");
+                    LogStream.getInstance().sysPrint(zombie.getName() + " Thread is Join");
+                    StaticManager.sysPrintDate(true);
                 }
             } catch(InterruptedException e) {
                 e.printStackTrace();

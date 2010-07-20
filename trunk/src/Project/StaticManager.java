@@ -79,6 +79,13 @@ public class StaticManager {
     public static void printDate(long time) {
         System.out.println(DateFormat.getTimeInstance().format(new Date(time)));
     }
+    public static void sysPrintDate(boolean isSys) {
+        if (isSys) {
+            LogStream.getInstance().sysPrint(DateFormat.getTimeInstance().format(new Date(System.currentTimeMillis())));
+        } else {
+            LogStream.getInstance().eventPrint(DateFormat.getTimeInstance().format(new Date(System.currentTimeMillis())));
+        }
+    }
     public static void threadInfo() {
         System.out.println(Thread.activeCount());
         Thread[] array = new Thread[Thread.activeCount()];
@@ -100,6 +107,10 @@ public class StaticManager {
      */
     public static final String[] SWTitle = {"索引", "名稱", "ID", "路徑", "參數", "型態", "狀態", "開始時間", "map"};
     public static final ArrayList<BlackListStruct> BlackList = new ArrayList<BlackListStruct>() {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -5086503114287426572L;
         public boolean equals(Object o) {
             for (Object data : this.toArray()) {
                 if (data.equals(o)){

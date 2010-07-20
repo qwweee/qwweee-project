@@ -5,6 +5,7 @@ package Project.mainThread;
 
 import java.net.DatagramPacket;
 
+import Project.LogStream;
 import Project.StaticManager;
 import Project.utils.Queue;
 import Project.utils.netflow.Util;
@@ -38,6 +39,7 @@ public class NetFlowProcess extends Thread{
      */
     public void run() {
         System.out.println("Process Netflow Packet Start ...............");
+        LogStream.getInstance().sysPrint("Process Netflow Packet Start ...............");
         while(true) {
             DatagramPacket packet = (DatagramPacket)queue.deQueue();
             processPacket(packet);

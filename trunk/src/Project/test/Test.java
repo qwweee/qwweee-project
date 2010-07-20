@@ -42,6 +42,13 @@ public class Test {
         //set.setLinkUp();
         //selectDB();
         BlackListTest();
+        /*String str = "c:\\windows\\system";
+        String str3 = "d:\\windows\\System";
+        String str2 = "\\system\\aaa";
+        System.out.println(str.indexOf(":"));
+        System.out.println(str2.indexOf(":"));
+        System.out.println(str3.substring(str3.indexOf(":")).equalsIgnoreCase(str.substring(str.indexOf(":"))));
+        */
     }
     private static void BlackListTest() {
         BlackList f = new BlackList();

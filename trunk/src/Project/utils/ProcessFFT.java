@@ -69,6 +69,19 @@ public class ProcessFFT {
         }
         return null;
     }
+    public static Complex[] processFFT(DataStruct[] data) {
+        int N=data.length;
+        Complex[] c = new Complex[N];
+        double[] num = new double[N];
+        for(int i=0; i<N; i++) {
+            num[i] = data[i].dataSize;
+            c[i] = new Complex(num[i],0);
+        }
+        
+        Complex[] x = FFT.forward(c);
+        
+        return x;
+    }
     public static int gcd(int m, int n) { 
         if(n != 0) return gcd(n, m % n); else return m; 
     }
